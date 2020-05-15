@@ -40,21 +40,36 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: _controller,
-            ),
-            RaisedButton(
-              onPressed: () {
-                setState(() {});
-              },
-              child: Text("get"),
-            ),
-            FlutterLinkPreview(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      setState(() {});
+                    },
+                    child: const Text("get"),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              FlutterLinkPreview(
                 url: _controller.value.text,
-                key: ValueKey(DateTime.now().toString())),
-          ],
+                key: ValueKey(_controller.value.text),
+                titleStyle: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

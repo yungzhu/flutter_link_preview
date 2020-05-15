@@ -4,12 +4,19 @@ import 'package:flutter/material.dart';
 import 'web_parser.dart';
 
 class FlutterLinkPreview extends StatefulWidget {
-  const FlutterLinkPreview(
-      {Key key, @required this.url, this.cache, this.builder})
-      : super(key: key);
+  const FlutterLinkPreview({
+    Key key,
+    @required this.url,
+    this.cache = const Duration(hours: 1),
+    this.builder,
+    this.titleStyle,
+    this.bodyStyle,
+  }) : super(key: key);
   final String url;
   final Duration cache;
   final Widget Function(WebInfo info) builder;
+  final TextStyle titleStyle;
+  final TextStyle bodyStyle;
 
   @override
   _FlutterLinkPreviewState createState() => _FlutterLinkPreviewState();
@@ -28,8 +35,8 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
   _init() async {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
-      _url = _url.replaceFirst("https", "http");
-      _info = await WebParser.getData(_url, widget.cache);
+      var url = _url.replaceFirst("https", "http");
+      _info = await WebParser.getData(url, widget.cache);
       setState(() {});
     }
   }
@@ -61,6 +68,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
               child: Text(
                 _info.title,
                 overflow: TextOverflow.ellipsis,
+                style: widget.titleStyle,
               ),
             ),
           ],
@@ -71,6 +79,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
             _info.description,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
+            style: widget.bodyStyle,
           ),
       ],
     );

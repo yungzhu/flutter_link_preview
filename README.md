@@ -1,14 +1,26 @@
 # flutter_link_preview
 
-A new Flutter package.
+This is a URL preview plugin that previews the content of a URL
+
+## Special feature
+
+-   Caching mechanism to return results faster
+-   Better fault tolerance.
+-   Support Chinese no mess code
 
 ## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+```
+FlutterLinkPreview(
+    url: "https://github.com",
+    titleStyle: TextStyle(
+        color: Colors.blue,
+        fontWeight: FontWeight.bold,
+    ),
+)
+```
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Result:
+![Result Image](web.jpg)
+
+You can also use builder to display custom styles
