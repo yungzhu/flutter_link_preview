@@ -1,8 +1,14 @@
 library flutter_link_preview;
 
 import 'package:flutter/material.dart';
-import 'web_parser.dart';
+import 'dart:convert';
+import 'package:html/dom.dart' hide Text;
+import 'package:html/parser.dart' as parser;
+import 'package:http/http.dart' as http;
 
+part 'web_analyzer.dart';
+
+/// Link Preview Widget
 class FlutterLinkPreview extends StatefulWidget {
   const FlutterLinkPreview({
     Key key,
@@ -12,10 +18,20 @@ class FlutterLinkPreview extends StatefulWidget {
     this.titleStyle,
     this.bodyStyle,
   }) : super(key: key);
+
+  /// Web address, HTTP and HTTPS support
   final String url;
+
+  /// Cache result time, default cache 1 hour
   final Duration cache;
+
+  /// Customized rendering methods
   final Widget Function(WebInfo info) builder;
+
+  /// Title style
   final TextStyle titleStyle;
+
+  /// Content style
   final TextStyle bodyStyle;
 
   @override
@@ -36,7 +52,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
       var url = _url.replaceFirst("https", "http");
-      _info = await WebParser.getData(url, widget.cache);
+      _info = await WebAnalyzer.getInfo(url, widget.cache);
       setState(() {});
     }
   }
@@ -47,11 +63,11 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       return widget.builder(_info);
     }
 
-    if (_info == null || !WebParser.isNotEmpty(_info.icon)) {
+    if (_info == null || !WebAnalyzer.isNotEmpty(_info.icon)) {
       return const SizedBox();
     }
 
-    final bool hasDescription = WebParser.isNotEmpty(_info.description);
+    final bool hasDescription = WebAnalyzer.isNotEmpty(_info.description);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

@@ -1,11 +1,6 @@
-library flutter_link_preview;
+part of flutter_link_preview;
 
-import 'dart:convert';
-
-import 'package:html/dom.dart' hide Text;
-import 'package:html/parser.dart' as parser;
-import 'package:http/http.dart' as http;
-
+/// Web Information
 class WebInfo {
   final String title;
   final String icon;
@@ -15,14 +10,18 @@ class WebInfo {
   WebInfo({this.title, this.icon, this.description});
 }
 
-class WebParser {
+/// Web analyzer
+class WebAnalyzer {
   static Map<String, WebInfo> _map = {};
 
+  /// Is it an empty string
   static bool isNotEmpty(String str) {
     return str != null && str.isNotEmpty;
   }
 
-  static Future<WebInfo> getData(String url, Duration cache) async {
+  /// Get web information
+  /// return [WebInfo]
+  static Future<WebInfo> getInfo(String url, Duration cache) async {
     var info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
@@ -51,21 +50,21 @@ class WebParser {
       var body = Utf8Decoder().convert(response.bodyBytes);
       var document = parser.parse(body);
       var info = WebInfo(
-        title: _scrapeTitle(document),
-        icon: _scrapeIcon(document, url),
-        description: _scrapeDescription(document),
+        title: _analyzeTitle(document),
+        icon: _analyzeIcon(document, url),
+        description: _analyzeDescription(document),
       );
       return info;
     }
     return null;
   }
 
-  static String _extractHost(String link) {
-    Uri uri = Uri.parse(link);
+  static String _getHost(String url) {
+    Uri uri = Uri.parse(url);
     return uri.host;
   }
 
-  static String _scrapeTitle(Document document) {
+  static String _analyzeTitle(Document document) {
     var list = document.head.getElementsByTagName("title");
     if (list.isNotEmpty) {
       var tagTitle = list.first.text;
@@ -77,7 +76,7 @@ class WebParser {
     return "";
   }
 
-  static String _scrapeDescription(Document document) {
+  static String _analyzeDescription(Document document) {
     var meta = document.head.getElementsByTagName("meta");
     var description = "";
     var metaDescription = meta.firstWhere(
@@ -90,7 +89,7 @@ class WebParser {
     return description;
   }
 
-  static String _scrapeIcon(Document document, String url) {
+  static String _analyzeIcon(Document document, String url) {
     var meta = document.head.getElementsByTagName("link");
     var icon = "";
     var metaIcon = meta.firstWhere((e) {
@@ -122,7 +121,7 @@ class WebParser {
         if (icon.startsWith("//")) {
           icon = icon.replaceFirst("//", "http://");
         } else {
-          icon = "http://" + _extractHost(url) + icon;
+          icon = "http://" + _getHost(url) + icon;
         }
       }
     }
