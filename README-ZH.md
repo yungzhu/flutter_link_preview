@@ -2,7 +2,7 @@
 
 这是一个网址预览插件，可以预览网址的内容。
 
-Language: [English](README.md) | [中文简体](README-ZH.md)
+文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
 ![Demo](demo.jpg)
 

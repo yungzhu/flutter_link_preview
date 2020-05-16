@@ -2,6 +2,8 @@
 
 This is a URL preview plugin that previews the content of a URL
 
+Language: [English](README.md) | [中文简体](README-ZH.md)
+
 ![Demo](demo.jpg)
 
 ## Special feature
