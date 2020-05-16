@@ -6,9 +6,9 @@ This is a URL preview plugin that previews the content of a URL
 
 ## Special feature
 
--   Caching mechanism to return results faster
--   Better fault tolerance
--   Support Chinese no mess code
+-   Result caching and expiration mechanism for faster return of results
+-   Better fault tolerance, multiple ways to find icons
+-   Better support for Chinese, no garbled code.
 
 ## Getting Started
 
