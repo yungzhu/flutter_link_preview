@@ -7,7 +7,7 @@ This is a URL preview plugin that previews the content of a URL
 ## Special feature
 
 -   Caching mechanism to return results faster
--   Better fault tolerance.
+-   Better fault tolerance
 -   Support Chinese no mess code
 
 ## Getting Started
