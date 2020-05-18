@@ -54,6 +54,8 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       var url = _url.replaceFirst("https", "http");
       _info = await WebAnalyzer.getInfo(url, widget.cache);
       setState(() {});
+    } else {
+      print("Links don't start with http or https from : $_url");
     }
   }
 

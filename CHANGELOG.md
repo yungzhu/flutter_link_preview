@@ -1,3 +1,7 @@
+## [1.1.2] - 2020-5-17.
+
+-   Enhanced compatibility and error alerts
+
 ## [1.1.1] - 2020-5-16.
 
 -   Update notes

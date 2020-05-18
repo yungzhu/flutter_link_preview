@@ -47,7 +47,14 @@ class WebAnalyzer {
 
   static WebInfo _getWebInfo(http.Response response, String url) {
     if (response.statusCode == 200) {
-      var body = Utf8Decoder().convert(response.bodyBytes);
+      var body;
+      try {
+        body = Utf8Decoder().convert(response.bodyBytes);
+      } catch (e) {
+        print("Web page resolution failure from : $url");
+        return null;
+      }
+
       var document = parser.parse(body);
       var info = WebInfo(
         title: _analyzeTitle(document),
@@ -94,7 +101,10 @@ class WebAnalyzer {
     var icon = "";
     var metaIcon = meta.firstWhere((e) {
       var rel = e.attributes["rel"];
-      if (rel == "icon" || rel == "shortcut icon" || rel == "fluid-icon") {
+      if (rel == "icon" ||
+          rel == "shortcut icon" ||
+          rel == "fluid-icon" ||
+          rel == "apple-touch-icon") {
         icon = e.attributes["href"];
         if (icon != null && icon.toLowerCase().indexOf(".svg") == -1) {
           return true;
@@ -124,6 +134,8 @@ class WebAnalyzer {
           icon = "http://" + _getHost(url) + icon;
         }
       }
+    } else {
+      print("Icon not available from : $url");
     }
     return icon;
   }
