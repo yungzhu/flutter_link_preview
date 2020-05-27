@@ -17,6 +17,7 @@ class FlutterLinkPreview extends StatefulWidget {
     this.builder,
     this.titleStyle,
     this.bodyStyle,
+    this.showImage = true,
   }) : super(key: key);
 
   /// Web address, HTTP and HTTPS support
@@ -33,6 +34,9 @@ class FlutterLinkPreview extends StatefulWidget {
 
   /// Content style
   final TextStyle bodyStyle;
+
+  /// Show image or not
+  final bool showImage;
 
   @override
   _FlutterLinkPreviewState createState() => _FlutterLinkPreviewState();
@@ -52,7 +56,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
       final url = _url.replaceFirst("https", "http");
-      _info = await WebAnalyzer.getInfo(url, widget.cache);
+      _info = await WebAnalyzer.getInfo(url, widget.cache, widget.showImage);
       setState(() {});
     } else {
       print("Links don't start with http or https from : $_url");

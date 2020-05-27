@@ -14,6 +14,7 @@ class WebInfo extends InfoBase {
   WebInfo({this.title, this.icon, this.description});
 }
 
+/// Image Information
 class ImageInfo extends InfoBase {
   final String url;
   DateTime _timeout;
@@ -32,7 +33,8 @@ class WebAnalyzer {
 
   /// Get web information
   /// return [InfoBase]
-  static Future<InfoBase> getInfo(String url, Duration cache) async {
+  static Future<InfoBase> getInfo(
+      String url, Duration cache, bool showImage) async {
     InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
@@ -44,12 +46,14 @@ class WebAnalyzer {
     try {
       final response = await http.get(url);
 
-      final String contentType = response.headers["content-type"];
-      if (contentType.indexOf("image/") > -1) {
-        return ImageInfo(url: url);
+      if (showImage) {
+        final String contentType = response.headers["content-type"];
+        if (contentType != null && contentType.indexOf("image/") > -1) {
+          return ImageInfo(url: url);
+        }
       }
 
-      info = _getWebInfo(response, url);
+      info = _getWebInfo(response, url, showImage);
       if (cache != null && info != null) {
         info._timeout = DateTime.now().add(cache);
         _map[url] = info;
@@ -61,7 +65,8 @@ class WebAnalyzer {
     return info;
   }
 
-  static WebInfo _getWebInfo(http.Response response, String url) {
+  static InfoBase _getWebInfo(
+      http.Response response, String url, bool showImage) {
     if (response.statusCode == 200) {
       String body;
       try {
@@ -72,6 +77,13 @@ class WebAnalyzer {
       }
 
       final document = parser.parse(body);
+
+      // get gif image
+      if (showImage) {
+        final gif = _analyzeGif(document, url);
+        if (gif != null) return gif;
+      }
+
       final info = WebInfo(
         title: _analyzeTitle(document),
         icon: _analyzeIcon(document, url),
@@ -82,33 +94,50 @@ class WebAnalyzer {
     return null;
   }
 
+  static InfoBase _analyzeGif(Document document, String url) {
+    if (_getMetaContent(
+          document,
+          "property",
+          "og:image:type",
+        ) ==
+        "image/gif") {
+      final gif = _getMetaContent(document, "property", "og:image");
+      if (gif != null) return ImageInfo(url: _handleUrl(url, gif));
+    }
+    return null;
+  }
+
+  static String _getMetaContent(
+      Document document, String property, String propertyValue) {
+    final meta = document.head.getElementsByTagName("meta");
+    final ele = meta.firstWhere((e) => e.attributes[property] == propertyValue,
+        orElse: () => null);
+    if (ele != null) return ele.attributes["content"];
+    return null;
+  }
+
   static String _getHost(String url) {
     Uri uri = Uri.parse(url);
     return uri.host;
   }
 
   static String _analyzeTitle(Document document) {
+    final title = _getMetaContent(document, "property", "og:title");
+    if (title != null) return title;
     final list = document.head.getElementsByTagName("title");
     if (list.isNotEmpty) {
       final tagTitle = list.first.text;
-      if (tagTitle != null) {
-        return tagTitle;
-      }
+      if (tagTitle != null) return tagTitle;
     }
 
     return "";
   }
 
   static String _analyzeDescription(Document document) {
-    final meta = document.head.getElementsByTagName("meta");
-    String description = "";
-    final metaDescription = meta.firstWhere(
-        (e) => e.attributes["name"] == "description",
-        orElse: () => null);
+    final desc = _getMetaContent(document, "property", "og:description");
+    if (desc != null) return desc;
 
-    if (metaDescription != null) {
-      description = metaDescription.attributes["content"];
-    }
+    final description = _getMetaContent(document, "name", "description");
     return description;
   }
 
@@ -142,17 +171,19 @@ class WebAnalyzer {
       }
     }
 
-    if (isNotEmpty(icon)) {
-      if (!icon.startsWith("http")) {
-        if (icon.startsWith("//")) {
-          icon = icon.replaceFirst("//", "http://");
+    return _handleUrl(url, icon);
+  }
+
+  static String _handleUrl(String host, String source) {
+    if (isNotEmpty(source)) {
+      if (!source.startsWith("http")) {
+        if (source.startsWith("//")) {
+          source = source.replaceFirst("//", "http://");
         } else {
-          icon = "http://" + _getHost(url) + icon;
+          source = "http://" + _getHost(host) + source;
         }
       }
-    } else {
-      print("Icon not available from : $url");
     }
-    return icon;
+    return source;
   }
 }
