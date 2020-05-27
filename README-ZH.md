@@ -33,4 +33,4 @@ FlutterLinkPreview(
 
 > 你也可以使用 builder 函数进行自定义渲染
 
-> [点击这里查看详细示例](example/lib/mian.dart).
+> [点击这里查看详细示例](example/lib/main.dart).

@@ -33,4 +33,4 @@ Result:
 
 > You can also use builder to display custom styles
 
-> [Click here for a detailed example](example/lib/mian.dart).
+> [Click here for a detailed example](example/lib/main.dart).
