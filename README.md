@@ -6,11 +6,14 @@ Language: [English](README.md) | [中文简体](README-ZH.md)
 
 ![Demo](demo.jpg)
 
+![Gif](gif.jpg)
+
 ## Special feature
 
 -   Result caching and expiration mechanism for faster return of results
 -   Better fault tolerance, multiple ways to find icons
--   Better support for Chinese, no garbled code.
+-   Better support for Chinese, no garbled code
+-   Support GIF and other image previews
 
 ## Getting Started
 
