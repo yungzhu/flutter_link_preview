@@ -60,12 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               const SizedBox(height: 15),
-              FlutterLinkPreview(
-                url: _controller.value.text,
-                key: ValueKey(_controller.value.text),
-                titleStyle: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 600),
+                child: FlutterLinkPreview(
+                  url: _controller.value.text,
+                  key: ValueKey(_controller.value.text),
+                  titleStyle: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
