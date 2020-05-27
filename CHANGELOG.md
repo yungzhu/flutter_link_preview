@@ -1,4 +1,4 @@
-## [1.2.1] - 2020-5-17.
+## [1.2.2] - 2020-5-27.
 
 -   New image display that can be used to display gifs
 -   Enhancing title and description access

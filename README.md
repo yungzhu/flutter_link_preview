@@ -32,3 +32,5 @@ Result:
 ![Result Image](web.jpg)
 
 > You can also use builder to display custom styles
+
+> [Click here for a detailed example](example/lib/mian.dart).

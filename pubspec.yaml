@@ -1,6 +1,6 @@
 name: flutter_link_preview
 description: This is a URL preview plugin that previews the content of a URL.
-version: 1.2.1
+version: 1.2.2
 homepage: https://github.com/yungzhu/flutter_link_preview
 
 environment:
