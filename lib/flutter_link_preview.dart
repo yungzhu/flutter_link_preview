@@ -40,7 +40,7 @@ class FlutterLinkPreview extends StatefulWidget {
 
 class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
   String _url;
-  WebInfo _info;
+  InfoBase _info;
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
   _init() async {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
-      var url = _url.replaceFirst("https", "http");
+      final url = _url.replaceFirst("https", "http");
       _info = await WebAnalyzer.getInfo(url, widget.cache);
       setState(() {});
     } else {
@@ -65,18 +65,31 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       return widget.builder(_info);
     }
 
-    if (_info == null || !WebAnalyzer.isNotEmpty(_info.icon)) {
+    if (_info == null) {
       return const SizedBox();
     }
 
-    final bool hasDescription = WebAnalyzer.isNotEmpty(_info.description);
+    if (_info is ImageInfo) {
+      return Image.network(
+        (_info as ImageInfo).url,
+        fit: BoxFit.contain,
+      );
+    }
+
+    WebInfo info = _info;
+
+    if (!WebAnalyzer.isNotEmpty(info.icon)) {
+      return const SizedBox();
+    }
+
+    final bool hasDescription = WebAnalyzer.isNotEmpty(info.description);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(
           children: <Widget>[
             Image.network(
-              _info.icon,
+              info.icon,
               fit: BoxFit.contain,
               width: 30,
               height: 30,
@@ -84,7 +97,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                _info.title,
+                info.title,
                 overflow: TextOverflow.ellipsis,
                 style: widget.titleStyle,
               ),
@@ -94,7 +107,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
         if (hasDescription) const SizedBox(height: 8),
         if (hasDescription)
           Text(
-            _info.description,
+            info.description,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
             style: widget.bodyStyle,

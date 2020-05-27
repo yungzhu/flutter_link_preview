@@ -1,7 +1,11 @@
 part of flutter_link_preview;
 
+abstract class InfoBase {
+  DateTime _timeout;
+}
+
 /// Web Information
-class WebInfo {
+class WebInfo extends InfoBase {
   final String title;
   final String icon;
   final String description;
@@ -10,9 +14,16 @@ class WebInfo {
   WebInfo({this.title, this.icon, this.description});
 }
 
+class ImageInfo extends InfoBase {
+  final String url;
+  DateTime _timeout;
+
+  ImageInfo({this.url});
+}
+
 /// Web analyzer
 class WebAnalyzer {
-  static Map<String, WebInfo> _map = {};
+  static Map<String, InfoBase> _map = {};
 
   /// Is it an empty string
   static bool isNotEmpty(String str) {
@@ -20,9 +31,9 @@ class WebAnalyzer {
   }
 
   /// Get web information
-  /// return [WebInfo]
-  static Future<WebInfo> getInfo(String url, Duration cache) async {
-    var info = _map[url];
+  /// return [InfoBase]
+  static Future<InfoBase> getInfo(String url, Duration cache) async {
+    InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
         return info;
@@ -31,7 +42,13 @@ class WebAnalyzer {
       }
     }
     try {
-      var response = await http.get(url);
+      final response = await http.get(url);
+
+      final String contentType = response.headers["content-type"];
+      print(contentType);
+      if (contentType.indexOf("image/") > -1) {
+        return ImageInfo(url: url);
+      }
 
       info = _getWebInfo(response, url);
       if (cache != null && info != null) {
@@ -47,7 +64,7 @@ class WebAnalyzer {
 
   static WebInfo _getWebInfo(http.Response response, String url) {
     if (response.statusCode == 200) {
-      var body;
+      String body;
       try {
         body = Utf8Decoder().convert(response.bodyBytes);
       } catch (e) {
@@ -55,8 +72,8 @@ class WebAnalyzer {
         return null;
       }
 
-      var document = parser.parse(body);
-      var info = WebInfo(
+      final document = parser.parse(body);
+      final info = WebInfo(
         title: _analyzeTitle(document),
         icon: _analyzeIcon(document, url),
         description: _analyzeDescription(document),
@@ -72,9 +89,9 @@ class WebAnalyzer {
   }
 
   static String _analyzeTitle(Document document) {
-    var list = document.head.getElementsByTagName("title");
+    final list = document.head.getElementsByTagName("title");
     if (list.isNotEmpty) {
-      var tagTitle = list.first.text;
+      final tagTitle = list.first.text;
       if (tagTitle != null) {
         return tagTitle;
       }
@@ -84,9 +101,9 @@ class WebAnalyzer {
   }
 
   static String _analyzeDescription(Document document) {
-    var meta = document.head.getElementsByTagName("meta");
-    var description = "";
-    var metaDescription = meta.firstWhere(
+    final meta = document.head.getElementsByTagName("meta");
+    String description = "";
+    final metaDescription = meta.firstWhere(
         (e) => e.attributes["name"] == "description",
         orElse: () => null);
 
@@ -97,10 +114,10 @@ class WebAnalyzer {
   }
 
   static String _analyzeIcon(Document document, String url) {
-    var meta = document.head.getElementsByTagName("link");
-    var icon = "";
-    var metaIcon = meta.firstWhere((e) {
-      var rel = e.attributes["rel"];
+    final meta = document.head.getElementsByTagName("link");
+    String icon = "";
+    final metaIcon = meta.firstWhere((e) {
+      final rel = e.attributes["rel"];
       if (rel == "icon" ||
           rel == "shortcut icon" ||
           rel == "fluid-icon" ||
@@ -116,8 +133,8 @@ class WebAnalyzer {
     if (metaIcon != null) {
       icon = metaIcon.attributes["href"];
     } else {
-      var meta = document.head.getElementsByTagName("meta");
-      var metaDescription = meta.firstWhere(
+      final meta = document.head.getElementsByTagName("meta");
+      final metaDescription = meta.firstWhere(
           (e) => e.attributes["property"] == "og:image",
           orElse: () => null);
 
