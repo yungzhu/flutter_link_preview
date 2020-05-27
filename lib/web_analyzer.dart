@@ -45,7 +45,6 @@ class WebAnalyzer {
       final response = await http.get(url);
 
       final String contentType = response.headers["content-type"];
-      print(contentType);
       if (contentType.indexOf("image/") > -1) {
         return ImageInfo(url: url);
       }
