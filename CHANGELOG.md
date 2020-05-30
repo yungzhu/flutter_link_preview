@@ -1,4 +1,4 @@
-## [1.2.3] - 2020-5-30.
+## [1.2.4] - 2020-5-30.
 
 -   Images are displayed using CachedNetworkImage
 -   Fix possible errors when destroyed

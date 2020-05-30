@@ -49,11 +49,14 @@ class WebAnalyzer {
       if (showImage) {
         final String contentType = response.headers["content-type"];
         if (contentType != null && contentType.indexOf("image/") > -1) {
-          return ImageInfo(url: url);
+          info = ImageInfo(url: url);
         }
       }
 
-      info = _getWebInfo(response, url, showImage);
+      if (info == null) {
+        info = _getWebInfo(response, url, showImage);
+      }
+
       if (cache != null && info != null) {
         info._timeout = DateTime.now().add(cache);
         _map[url] = info;
