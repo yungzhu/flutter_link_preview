@@ -1,3 +1,8 @@
+## [1.2.3] - 2020-5-30.
+
+-   Images are displayed using CachedNetworkImage
+-   Fix possible errors when destroyed
+
 ## [1.2.2] - 2020-5-27.
 
 -   New image display that can be used to display gifs

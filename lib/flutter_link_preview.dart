@@ -1,5 +1,6 @@
 library flutter_link_preview;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:html/dom.dart' hide Text;
@@ -57,7 +58,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     if (_url.startsWith("http")) {
       final url = _url.replaceFirst("https", "http");
       _info = await WebAnalyzer.getInfo(url, widget.cache, widget.showImage);
-      setState(() {});
+      if (mounted) setState(() {});
     } else {
       print("Links don't start with http or https from : $_url");
     }
@@ -74,8 +75,8 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     }
 
     if (_info is ImageInfo) {
-      return Image.network(
-        (_info as ImageInfo).url,
+      return CachedNetworkImage(
+        imageUrl: (_info as ImageInfo).url,
         fit: BoxFit.contain,
       );
     }
@@ -92,8 +93,8 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Image.network(
-              info.icon,
+            CachedNetworkImage(
+              imageUrl: info.icon,
               fit: BoxFit.contain,
               width: 30,
               height: 30,
