@@ -1,4 +1,4 @@
-## [1.2.5] - 2020-6-10.
+## [1.2.6] - 2020-6-10.
 
 -   Adding Adaptation to Video
 -   Improved analytical performance
