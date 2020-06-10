@@ -9,7 +9,6 @@ class WebInfo extends InfoBase {
   final String title;
   final String icon;
   final String description;
-  DateTime _timeout;
 
   WebInfo({this.title, this.icon, this.description});
 }
@@ -17,7 +16,6 @@ class WebInfo extends InfoBase {
 /// Image Information
 class ImageInfo extends InfoBase {
   final String url;
-  DateTime _timeout;
 
   ImageInfo({this.url});
 }
@@ -25,15 +23,14 @@ class ImageInfo extends InfoBase {
 /// Video Information
 class VideoInfo extends InfoBase {
   final String url;
-  DateTime _timeout;
 
   VideoInfo({this.url});
 }
 
 /// Web analyzer
 class WebAnalyzer {
-  static Map<String, InfoBase> _map = {};
-  static RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*)<\/body>");
+  static final Map<String, InfoBase> _map = {};
+  static final RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*)<\/body>");
 
   /// Is it an empty string
   static bool isNotEmpty(String str) {
@@ -59,17 +56,15 @@ class WebAnalyzer {
       if (multimedia) {
         final String contentType = response.headers["content-type"];
         if (contentType != null) {
-          if (contentType.indexOf("image/") > -1) {
+          if (contentType.contains("image/")) {
             info = ImageInfo(url: url);
-          } else if (contentType.indexOf("video/") > -1) {
+          } else if (contentType.contains("video/")) {
             info = VideoInfo(url: url);
           }
         }
       }
 
-      if (info == null) {
-        info = _getWebInfo(response, url, multimedia);
-      }
+      info ??= _getWebInfo(response, url, multimedia);
 
       if (cache != null && info != null) {
         info._timeout = DateTime.now().add(cache);
@@ -87,7 +82,7 @@ class WebAnalyzer {
     if (response.statusCode == 200) {
       String body;
       try {
-        body = Utf8Decoder().convert(response.bodyBytes);
+        body = const Utf8Decoder().convert(response.bodyBytes);
       } catch (e) {
         print("Web page resolution failure from : $url");
         return null;
@@ -140,7 +135,7 @@ class WebAnalyzer {
   }
 
   static String _getHost(String url) {
-    Uri uri = Uri.parse(url);
+    final Uri uri = Uri.parse(url);
     return uri.host;
   }
 
@@ -174,7 +169,7 @@ class WebAnalyzer {
           rel == "fluid-icon" ||
           rel == "apple-touch-icon") {
         icon = e.attributes["href"];
-        if (icon != null && icon.toLowerCase().indexOf(".svg") == -1) {
+        if (icon != null && !icon.toLowerCase().contains(".svg")) {
           return true;
         }
       }
@@ -203,7 +198,7 @@ class WebAnalyzer {
         if (source.startsWith("//")) {
           source = source.replaceFirst("//", "http://");
         } else {
-          source = "http://" + _getHost(host) + source;
+          source = "http://${_getHost(host)}$source";
         }
       }
     }

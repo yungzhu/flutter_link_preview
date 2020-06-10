@@ -1,11 +1,13 @@
 library flutter_link_preview;
 
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
+
 part 'web_analyzer.dart';
 
 /// Link Preview Widget
@@ -52,7 +54,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     super.initState();
   }
 
-  _init() async {
+  Future<void> _init() async {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
       _info = await WebAnalyzer.getInfo(
@@ -86,21 +88,21 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     final WebInfo info = _info;
     if (!WebAnalyzer.isNotEmpty(info.title)) return const SizedBox();
     final bool hasDescription = WebAnalyzer.isNotEmpty(info.description);
-    final Color iconColor =
-        widget.titleStyle != null ? widget.titleStyle.color : null;
+    final Color iconColor = widget.titleStyle?.color;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(
           children: <Widget>[
-            WebAnalyzer.isNotEmpty(info.icon)
-                ? CachedNetworkImage(
-                    imageUrl: info.icon,
-                    fit: BoxFit.contain,
-                    width: 30,
-                    height: 30,
-                  )
-                : Icon(Icons.link, size: 30, color: iconColor),
+            if (WebAnalyzer.isNotEmpty(info.icon))
+              CachedNetworkImage(
+                imageUrl: info.icon,
+                fit: BoxFit.contain,
+                width: 30,
+                height: 30,
+              )
+            else
+              Icon(Icons.link, size: 30, color: iconColor),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
