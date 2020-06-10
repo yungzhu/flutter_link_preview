@@ -1,3 +1,7 @@
+## [1.2.5] - 2020-6-10.
+
+-   Adding Adaptation to Video
+
 ## [1.2.4] - 2020-5-30.
 
 -   Images are displayed using CachedNetworkImage

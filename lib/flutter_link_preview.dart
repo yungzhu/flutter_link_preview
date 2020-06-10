@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-
 part 'web_analyzer.dart';
 
 /// Link Preview Widget
@@ -18,7 +17,7 @@ class FlutterLinkPreview extends StatefulWidget {
     this.builder,
     this.titleStyle,
     this.bodyStyle,
-    this.showImage = true,
+    this.showMultimedia = true,
   }) : super(key: key);
 
   /// Web address, HTTP and HTTPS support
@@ -36,8 +35,8 @@ class FlutterLinkPreview extends StatefulWidget {
   /// Content style
   final TextStyle bodyStyle;
 
-  /// Show image or not
-  final bool showImage;
+  /// Show image or video
+  final bool showMultimedia;
 
   @override
   _FlutterLinkPreviewState createState() => _FlutterLinkPreviewState();
@@ -57,7 +56,11 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
       final url = _url.replaceFirst("https", "http");
-      _info = await WebAnalyzer.getInfo(url, widget.cache, widget.showImage);
+      _info = await WebAnalyzer.getInfo(
+        url,
+        cache: widget.cache,
+        multimedia: widget.showMultimedia,
+      );
       if (mounted) setState(() {});
     } else {
       print("Links don't start with http or https from : $_url");
@@ -81,24 +84,23 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       );
     }
 
-    WebInfo info = _info;
-
-    if (!WebAnalyzer.isNotEmpty(info.icon)) {
-      return const SizedBox();
-    }
-
+    final WebInfo info = _info;
     final bool hasDescription = WebAnalyzer.isNotEmpty(info.description);
+    final Color iconColor =
+        widget.titleStyle != null ? widget.titleStyle.color : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(
           children: <Widget>[
-            CachedNetworkImage(
-              imageUrl: info.icon,
-              fit: BoxFit.contain,
-              width: 30,
-              height: 30,
-            ),
+            WebAnalyzer.isNotEmpty(info.icon)
+                ? CachedNetworkImage(
+                    imageUrl: info.icon,
+                    fit: BoxFit.contain,
+                    width: 30,
+                    height: 30,
+                  )
+                : Icon(Icons.link, size: 30, color: iconColor),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

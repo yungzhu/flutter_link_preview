@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 15),
               ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 600),
+                constraints: BoxConstraints(maxHeight: 500),
                 child: FlutterLinkPreview(
                   url: _controller.value.text,
                   key: ValueKey(_controller.value.text),

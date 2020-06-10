@@ -22,6 +22,14 @@ class ImageInfo extends InfoBase {
   ImageInfo({this.url});
 }
 
+/// Video Information
+class VideoInfo extends InfoBase {
+  final String url;
+  DateTime _timeout;
+
+  VideoInfo({this.url});
+}
+
 /// Web analyzer
 class WebAnalyzer {
   static Map<String, InfoBase> _map = {};
@@ -33,8 +41,8 @@ class WebAnalyzer {
 
   /// Get web information
   /// return [InfoBase]
-  static Future<InfoBase> getInfo(
-      String url, Duration cache, bool showImage) async {
+  static Future<InfoBase> getInfo(String url,
+      {Duration cache, bool multimedia = true}) async {
     InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
@@ -46,15 +54,19 @@ class WebAnalyzer {
     try {
       final response = await http.get(url);
 
-      if (showImage) {
+      if (multimedia) {
         final String contentType = response.headers["content-type"];
-        if (contentType != null && contentType.indexOf("image/") > -1) {
-          info = ImageInfo(url: url);
+        if (contentType != null) {
+          if (contentType.indexOf("image/") > -1) {
+            info = ImageInfo(url: url);
+          } else if (contentType.indexOf("video/") > -1) {
+            info = VideoInfo(url: url);
+          }
         }
       }
 
       if (info == null) {
-        info = _getWebInfo(response, url, showImage);
+        info = _getWebInfo(response, url, multimedia);
       }
 
       if (cache != null && info != null) {
@@ -69,7 +81,7 @@ class WebAnalyzer {
   }
 
   static InfoBase _getWebInfo(
-      http.Response response, String url, bool showImage) {
+      http.Response response, String url, bool multimedia) {
     if (response.statusCode == 200) {
       String body;
       try {
@@ -81,10 +93,13 @@ class WebAnalyzer {
 
       final document = parser.parse(body);
 
-      // get gif image
-      if (showImage) {
+      // get image or video
+      if (multimedia) {
         final gif = _analyzeGif(document, url);
         if (gif != null) return gif;
+
+        final video = _analyzeVideo(document, url);
+        if (video != null) return video;
       }
 
       final info = WebInfo(
@@ -98,15 +113,16 @@ class WebAnalyzer {
   }
 
   static InfoBase _analyzeGif(Document document, String url) {
-    if (_getMetaContent(
-          document,
-          "property",
-          "og:image:type",
-        ) ==
-        "image/gif") {
+    if (_getMetaContent(document, "property", "og:image:type") == "image/gif") {
       final gif = _getMetaContent(document, "property", "og:image");
       if (gif != null) return ImageInfo(url: _handleUrl(url, gif));
     }
+    return null;
+  }
+
+  static InfoBase _analyzeVideo(Document document, String url) {
+    final video = _getMetaContent(document, "property", "og:video");
+    if (video != null) return VideoInfo(url: _handleUrl(url, video));
     return null;
   }
 
