@@ -33,6 +33,7 @@ class VideoInfo extends InfoBase {
 /// Web analyzer
 class WebAnalyzer {
   static Map<String, InfoBase> _map = {};
+  static RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*)<\/body>");
 
   /// Is it an empty string
   static bool isNotEmpty(String str) {
@@ -92,6 +93,8 @@ class WebAnalyzer {
         return null;
       }
 
+      // Improved performance
+      body = body.replaceFirst(_bodyReg, "<body></body>");
       final document = parser.parse(body);
 
       // get image or video
