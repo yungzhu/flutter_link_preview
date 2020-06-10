@@ -55,9 +55,8 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
   _init() async {
     _url = widget.url.trim();
     if (_url.startsWith("http")) {
-      final url = _url.replaceFirst("https", "http");
       _info = await WebAnalyzer.getInfo(
-        url,
+        _url,
         cache: widget.cache,
         multimedia: widget.showMultimedia,
       );
@@ -73,7 +72,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       return widget.builder(_info);
     }
 
-    if (_info == null) {
+    if (_info == null || _info is VideoInfo) {
       return const SizedBox();
     }
 
@@ -85,6 +84,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     }
 
     final WebInfo info = _info;
+    if (!WebAnalyzer.isNotEmpty(info.title)) return const SizedBox();
     final bool hasDescription = WebAnalyzer.isNotEmpty(info.description);
     final Color iconColor =
         widget.titleStyle != null ? widget.titleStyle.color : null;

@@ -43,6 +43,7 @@ class WebAnalyzer {
   /// return [InfoBase]
   static Future<InfoBase> getInfo(String url,
       {Duration cache, bool multimedia = true}) async {
+    url = url.replaceFirst("https", "http");
     InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
