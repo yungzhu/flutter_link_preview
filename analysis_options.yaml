@@ -61,7 +61,7 @@ linter:
         - empty_catches
         - empty_constructor_bodies
         - empty_statements
-        - exhaustive_cases
+        # - exhaustive_cases
         - file_names
         # - flutter_style_todos
         - hash_and_equals
@@ -77,7 +77,7 @@ linter:
         - literal_only_boolean_expressions
         - missing_whitespace_between_adjacent_strings
         - no_adjacent_strings_in_list
-        - no_default_cases
+        # - no_default_cases
         - no_duplicate_case_values
         - no_logic_in_create_state
         - no_runtimeType_toString
@@ -132,7 +132,7 @@ linter:
         - provide_deprecation_message
         # - public_member_api_docs
         - recursive_getters
-        - sized_box_for_whitespace
+        # - sized_box_for_whitespace
         - slash_for_doc_comments
         - sort_child_properties_last
         # - sort_constructors_first
@@ -163,7 +163,7 @@ linter:
         - unsafe_html
         - use_full_hex_values_for_flutter_colors
         - use_function_type_syntax_for_parameters
-        - use_is_even_rather_than_modulo
+        # - use_is_even_rather_than_modulo
         # - use_key_in_widget_constructors
         - use_raw_strings
         - use_rethrow_when_possible
