@@ -4,9 +4,9 @@ This is a URL preview plugin that previews the content of a URL
 
 Language: [English](README.md) | [中文简体](README-ZH.md)
 
-![Demo](demo.jpg)
+![Demo](images/demo.jpg)
 
-![Gif](gif.jpg)
+![Gif](images/gif.jpg)
 
 ## Special feature
 
@@ -17,7 +17,7 @@ Language: [English](README.md) | [中文简体](README-ZH.md)
 
 ## Getting Started
 
-```
+```dart
 FlutterLinkPreview(
     url: "https://github.com",
     titleStyle: TextStyle(
@@ -29,7 +29,7 @@ FlutterLinkPreview(
 
 Result:
 
-![Result Image](web.jpg)
+![Result Image](images/web.jpg)
 
 > You can also use builder to display custom styles
 

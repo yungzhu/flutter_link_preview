@@ -4,9 +4,9 @@
 
 文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
-![Demo](demo.jpg)
+![Demo](images/demo.jpg)
 
-![Gif](gif.jpg)
+![Gif](images/gif.jpg)
 
 ## 特色功能
 
@@ -17,7 +17,7 @@
 
 ## 开始入门
 
-```
+```dart
 FlutterLinkPreview(
     url: "https://github.com",
     titleStyle: TextStyle(
@@ -29,7 +29,7 @@ FlutterLinkPreview(
 
 结果:
 
-![Result Image](web.jpg)
+![Result Image](images/web.jpg)
 
 > 你也可以使用 builder 函数进行自定义渲染
 
