@@ -1,3 +1,7 @@
+## [1.2.8] - 2020-6-18.
+
+-   Fix some warnings
+
 ## [1.2.6] - 2020-6-10.
 
 -   Adding Adaptation to Video
