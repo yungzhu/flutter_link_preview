@@ -29,7 +29,7 @@ class FlutterLinkPreview extends StatefulWidget {
   final Duration cache;
 
   /// Customized rendering methods
-  final Widget Function(WebInfo info) builder;
+  final Widget Function(InfoBase info) builder;
 
   /// Title style
   final TextStyle titleStyle;

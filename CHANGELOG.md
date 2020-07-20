@@ -1,3 +1,7 @@
+## [1.2.10] - 2020-7-20.
+
+-   Change the parameters from WebInfo to InfoBase
+
 ## [1.2.9] - 2020-6-28.
 
 -   Addition of open source agreements
