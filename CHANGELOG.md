@@ -1,3 +1,9 @@
+## [1.2.11] - 2020-7-27.
+
+-   Optimization of some of the websites that do not match successfully, such as youtu
+
+-   Optimizing code performance
+
 ## [1.2.10] - 2020-7-20.
 
 -   Change the parameters from WebInfo to InfoBase
