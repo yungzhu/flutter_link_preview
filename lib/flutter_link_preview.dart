@@ -108,6 +108,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
             Expanded(
               child: Text(
                 info.title,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: widget.titleStyle,
               ),

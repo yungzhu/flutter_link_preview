@@ -26,7 +26,9 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _controller;
   @override
   void initState() {
-    _controller = TextEditingController(text: "https://www.baidu.com");
+    _controller = TextEditingController(
+        text:
+            "https://click.mz.simba.taobao.com/necpm?spm=a21bo.2017.201874-sales.8&eadt=31&p=&s=1991808525&k=474&e=SUxTD2ulfJ5TFDV3rFI8BlK40VEcAoMovTuXabZA%2BAaarHBh9smeTBrqp3eVTYClsTwhFTeYaozeztuUDszO1FgHmAqQVjLSe%2FOrboKQAI6PpKhWr01Y8SJwZsBnSjuqFPSCea13zvAgC0RSbE%2FTh3Cqj9SdrwCuF9LuAUXZc5HV06n%2Bwtfba9d3eW%2FPtbGEAEu4lGxvE97wBINwKSmcCkPdqyBLazyLPVQ%2FK8QboOJiDfm78MTmvM03e7RjlIKRhKgcqbVsE3MTH5rpzxz5FAoG881ZVrCTOxzeBTKecP3c2Za6oY7rfyMt0UA75jRDsgDY5tsnHWpa6r1xhrEc5Uh9oSqtI3ZubF9GYLHa%2B%2BMU%2FRMr4SL38oc21nzUNDakQIPqx%2FLJpWbEMU6K2hg%2BjTe01qn1888GxKcv3BebcWGKtI40xIZ%2FgbM0mBuBbEKzlamjiOpfV6gRlhxN4wjJ8g%3D%3D");
     super.initState();
   }
 

@@ -30,8 +30,10 @@ class VideoInfo extends InfoBase {
 /// Web analyzer
 class WebAnalyzer {
   static final Map<String, InfoBase> _map = {};
-  static final RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*)<\/body>");
+  static final RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*?)<\/body>");
   static final RegExp _scriptReg = RegExp(r"<script[^>]*>([\s\S]*?)<\/script>");
+  static final RegExp _lineReg = RegExp(r"[\n\r]");
+  static final RegExp _spaceReg = RegExp(r"\s+");
 
   /// Is it an empty string
   static bool isNotEmpty(String str) {
@@ -42,7 +44,6 @@ class WebAnalyzer {
   /// return [InfoBase]
   static Future<InfoBase> getInfo(String url,
       {Duration cache, bool multimedia = true}) async {
-    // url = url.replaceFirst("https", "http");
     InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
@@ -55,6 +56,8 @@ class WebAnalyzer {
       final response = await _requestUrl(url);
 
       if (response == null) return null;
+      print(response.request.headers);
+      print(response.statusCode);
       if (multimedia) {
         final String contentType = response.headers["content-type"];
         if (contentType != null) {
@@ -79,22 +82,27 @@ class WebAnalyzer {
     return info;
   }
 
-  static Future<http.Response> _requestUrl(String url, {int count = 0}) async {
+  static Future<http.Response> _requestUrl(String url,
+      {int count = 0, String cookie}) async {
     http.Response response;
     try {
-      final uri = Uri.parse(url);
       response = await http.get(url, headers: {
         "User-Agent":
             "com.apple.WebKit.Networking/8609.2.9.0.5 CFNetwork/1126 Darwin/19.5.0",
-        "Host": uri.host,
+        // "accept-encoding": "gzip, deflate, br",
+        "cache-control": "no-cache",
+        // "referer": "https://www.bilibili.com/",
+        "Cookie": cookie,
+        "accept": "*/*",
       });
+      cookie = response.headers["set-cookie"];
     } catch (e) {
       if (count < 5) {
         if (e.message != null && e.message == "Redirect limit exceeded" ||
             e.message == "Redirect loop detected") {
           count++;
           print("Redirect:${e.uri} Error:$e");
-          return _requestUrl(e.uri.toString());
+          return _requestUrl(e.uri.toString(), count: count, cookie: cookie);
         }
       }
     }
@@ -107,53 +115,55 @@ class WebAnalyzer {
   static Future<InfoBase> _getWebInfo(
       http.Response response, String url, bool multimedia) async {
     if (response.statusCode == 200) {
-      String body;
+      String html;
       try {
-        body = const Utf8Decoder().convert(response.bodyBytes);
+        html = const Utf8Decoder().convert(response.bodyBytes);
       } catch (e) {
         try {
-          body = await CharsetConverter.decode("gbk", response.bodyBytes);
+          html = await CharsetConverter.decode("gbk", response.bodyBytes);
         } catch (e) {
           print("Web page resolution failure from:$url Error:$e");
-          return null;
         }
       }
 
+      if (html == null) return null;
+
       // Improved performance
-      body = body.replaceFirst(_bodyReg, "<body></body>");
-      body = body.replaceAll(_scriptReg, "");
-      final document = parser.parse(body);
+      html = html.replaceAll(_scriptReg, "");
+      final nobody = html.replaceFirst(_bodyReg, "<body></body>");
+      final document = parser.parse(nobody);
+      final uri = Uri.parse(url);
 
       // get image or video
       if (multimedia) {
-        final gif = _analyzeGif(document, url);
+        final gif = _analyzeGif(document, uri);
         if (gif != null) return gif;
 
-        final video = _analyzeVideo(document, url);
+        final video = _analyzeVideo(document, uri);
         if (video != null) return video;
       }
 
       final info = WebInfo(
         title: _analyzeTitle(document),
-        icon: _analyzeIcon(document, url),
-        description: _analyzeDescription(document),
+        icon: _analyzeIcon(document, uri),
+        description: _analyzeDescription(document, html),
       );
       return info;
     }
     return null;
   }
 
-  static InfoBase _analyzeGif(Document document, String url) {
+  static InfoBase _analyzeGif(Document document, Uri uri) {
     if (_getMetaContent(document, "property", "og:image:type") == "image/gif") {
       final gif = _getMetaContent(document, "property", "og:image");
-      if (gif != null) return ImageInfo(url: _handleUrl(url, gif));
+      if (gif != null) return ImageInfo(url: _handleUrl(uri, gif));
     }
     return null;
   }
 
-  static InfoBase _analyzeVideo(Document document, String url) {
+  static InfoBase _analyzeVideo(Document document, Uri uri) {
     final video = _getMetaContent(document, "property", "og:video");
-    if (video != null) return VideoInfo(url: _handleUrl(url, video));
+    if (video != null) return VideoInfo(url: _handleUrl(uri, video));
     return null;
   }
 
@@ -164,11 +174,6 @@ class WebAnalyzer {
         orElse: () => null);
     if (ele != null) return ele.attributes["content"];
     return null;
-  }
-
-  static String _getHost(String url) {
-    final Uri uri = Uri.parse(url);
-    return uri.host;
   }
 
   static String _analyzeTitle(Document document) {
@@ -182,20 +187,30 @@ class WebAnalyzer {
     return "";
   }
 
-  static String _analyzeDescription(Document document) {
+  static String _analyzeDescription(Document document, String html) {
     final desc = _getMetaContent(document, "property", "og:description");
     if (desc != null) return desc;
 
     final description = _getMetaContent(document, "name", "description") ??
         _getMetaContent(document, "name", "Description");
+
+    if (!isNotEmpty(description)) {
+      final allDom = parser.parse(html);
+      String body = allDom.body.text ?? "";
+      body = body.trim().replaceAll(_lineReg, " ").replaceAll(_spaceReg, " ");
+      if (body.length > 200) {
+        body = body.substring(0, 200);
+      }
+      return body;
+    }
     return description;
   }
 
-  static String _analyzeIcon(Document document, String url) {
+  static String _analyzeIcon(Document document, Uri uri) {
     final meta = document.head.getElementsByTagName("link");
     String icon = "";
     final metaIcon = meta.firstWhere((e) {
-      final rel = e.attributes["rel"];
+      final rel = (e.attributes["rel"] ?? "").toLowerCase();
       if (rel == "icon" ||
           rel == "shortcut icon" ||
           rel == "fluid-icon" ||
@@ -211,26 +226,21 @@ class WebAnalyzer {
     if (metaIcon != null) {
       icon = metaIcon.attributes["href"];
     } else {
-      final meta = document.head.getElementsByTagName("meta");
-      final metaDescription = meta.firstWhere(
-          (e) => e.attributes["property"] == "og:image",
-          orElse: () => null);
-
-      if (metaDescription != null) {
-        icon = metaDescription.attributes["content"];
-      }
+      return "${uri.origin}/favicon.ico";
     }
 
-    return _handleUrl(url, icon);
+    return _handleUrl(uri, icon);
   }
 
-  static String _handleUrl(String host, String source) {
-    if (isNotEmpty(source)) {
-      if (!source.startsWith("http")) {
-        if (source.startsWith("//")) {
-          source = source.replaceFirst("//", "http://");
+  static String _handleUrl(Uri uri, String source) {
+    if (isNotEmpty(source) && !source.startsWith("http")) {
+      if (source.startsWith("//")) {
+        source = "${uri.scheme}:$source";
+      } else {
+        if (source.startsWith("/")) {
+          source = "${uri.origin}$source";
         } else {
-          source = "http://${_getHost(host)}$source";
+          source = "${uri.origin}/$source";
         }
       }
     }
