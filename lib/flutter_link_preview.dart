@@ -3,6 +3,7 @@ library flutter_link_preview;
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:charset_converter/charset_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;

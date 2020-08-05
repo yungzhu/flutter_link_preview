@@ -31,7 +31,7 @@ class VideoInfo extends InfoBase {
 class WebAnalyzer {
   static final Map<String, InfoBase> _map = {};
   static final RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*)<\/body>");
-  static final RegExp _scriptReg = RegExp(r"<script[^>]*>([\s\S]*)<\/script>");
+  static final RegExp _scriptReg = RegExp(r"<script[^>]*>([\s\S]*?)<\/script>");
 
   /// Is it an empty string
   static bool isNotEmpty(String str) {
@@ -42,7 +42,7 @@ class WebAnalyzer {
   /// return [InfoBase]
   static Future<InfoBase> getInfo(String url,
       {Duration cache, bool multimedia = true}) async {
-    url = url.replaceFirst("https", "http");
+    // url = url.replaceFirst("https", "http");
     InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
@@ -52,8 +52,9 @@ class WebAnalyzer {
       }
     }
     try {
-      final response = await http.get(url);
+      final response = await _requestUrl(url);
 
+      if (response == null) return null;
       if (multimedia) {
         final String contentType = response.headers["content-type"];
         if (contentType != null) {
@@ -65,28 +66,57 @@ class WebAnalyzer {
         }
       }
 
-      info ??= _getWebInfo(response, url, multimedia);
+      info ??= await _getWebInfo(response, url, multimedia);
 
       if (cache != null && info != null) {
         info._timeout = DateTime.now().add(cache);
         _map[url] = info;
       }
     } catch (e) {
-      print("Get web info error($url) $e");
+      print("Get web info error($url) Error:$e");
     }
 
     return info;
   }
 
-  static InfoBase _getWebInfo(
-      http.Response response, String url, bool multimedia) {
+  static Future<http.Response> _requestUrl(String url, {int count = 0}) async {
+    http.Response response;
+    try {
+      final uri = Uri.parse(url);
+      response = await http.get(url, headers: {
+        "User-Agent":
+            "com.apple.WebKit.Networking/8609.2.9.0.5 CFNetwork/1126 Darwin/19.5.0",
+        "Host": uri.host,
+      });
+    } catch (e) {
+      if (count < 5) {
+        if (e.message != null && e.message == "Redirect limit exceeded" ||
+            e.message == "Redirect loop detected") {
+          count++;
+          print("Redirect:${e.uri} Error:$e");
+          return _requestUrl(e.uri.toString());
+        }
+      }
+    }
+    if (response == null) {
+      print("Get web info empty($url)");
+    }
+    return response;
+  }
+
+  static Future<InfoBase> _getWebInfo(
+      http.Response response, String url, bool multimedia) async {
     if (response.statusCode == 200) {
       String body;
       try {
         body = const Utf8Decoder().convert(response.bodyBytes);
       } catch (e) {
-        print("Web page resolution failure from : $url");
-        return null;
+        try {
+          body = await CharsetConverter.decode("gbk", response.bodyBytes);
+        } catch (e) {
+          print("Web page resolution failure from:$url Error:$e");
+          return null;
+        }
       }
 
       // Improved performance
@@ -156,7 +186,8 @@ class WebAnalyzer {
     final desc = _getMetaContent(document, "property", "og:description");
     if (desc != null) return desc;
 
-    final description = _getMetaContent(document, "name", "description");
+    final description = _getMetaContent(document, "name", "description") ??
+        _getMetaContent(document, "name", "Description");
     return description;
   }
 
