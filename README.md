@@ -10,10 +10,12 @@ Language: [English](README.md) | [中文简体](README-ZH.md)
 
 ## Special feature
 
--   Result caching and expiration mechanism for faster return of results
--   Better fault tolerance, multiple ways to find icons
--   Better support for Chinese, no garbled code
--   Support GIF and other image previews
+-   Support for content caching and expiration mechanisms to return results faster.
+-   Better fault tolerance, multiple ways to find icons, titles, descriptions
+-   Better support gbk code, no messy code
+-   Optimized for large files with better crawl performance.
+-   Support for second hop authentication with cookies
+-   Support gif, video and other content capture
 
 ## Getting Started
 

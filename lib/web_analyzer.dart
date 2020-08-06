@@ -45,6 +45,7 @@ class WebAnalyzer {
   /// return [InfoBase]
   static Future<InfoBase> getInfo(String url,
       {Duration cache, bool multimedia = true}) async {
+    // final start = DateTime.now();
     InfoBase info = _map[url];
     if (info != null) {
       if (info._timeout.isAfter(DateTime.now())) {
@@ -79,6 +80,8 @@ class WebAnalyzer {
     } catch (e) {
       print("Get web error:$url, Error:$e");
     }
+
+    // print("$url cost ${DateTime.now().difference(start).inMilliseconds}");
 
     return info;
   }

@@ -79,13 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.all(15),
           child: Column(
             children: <Widget>[
+              TextField(controller: _controller),
               Row(
                 children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                    ),
-                  ),
                   RaisedButton(
                     onPressed: () {
                       setState(() {});
@@ -101,6 +97,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {});
                     },
                     child: const Text("next"),
+                  ),
+                  const SizedBox(width: 15),
+                  RaisedButton(
+                    onPressed: () {
+                      _controller.clear();
+                    },
+                    child: const Text("clear"),
                   ),
                 ],
               ),

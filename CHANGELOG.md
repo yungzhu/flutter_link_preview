@@ -1,6 +1,10 @@
-## [1.2.13] - 2020-8-6.
+## [1.3.1] - 2020-8-6.
 
--
+-   Optimize cookie-dependent URL crawling
+
+-   New gbk encoding support
+
+-   Optimize the acquisition of icons, titiles and descriptions
 
 ## [1.2.11] - 2020-7-27.
 
