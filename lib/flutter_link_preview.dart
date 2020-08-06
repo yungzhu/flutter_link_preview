@@ -1,13 +1,13 @@
 library flutter_link_preview;
 
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:charset_converter/charset_converter.dart';
 import 'package:flutter/material.dart';
+import 'package:gbk2utf8/gbk2utf8.dart';
 import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 part 'web_analyzer.dart';
 
@@ -95,15 +95,14 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            if (WebAnalyzer.isNotEmpty(info.icon))
-              CachedNetworkImage(
-                imageUrl: info.icon,
-                fit: BoxFit.contain,
-                width: 30,
-                height: 30,
-              )
-            else
-              Icon(Icons.link, size: 30, color: iconColor),
+            CachedNetworkImage(
+              imageUrl: info.icon ?? "",
+              fit: BoxFit.contain,
+              width: 30,
+              height: 30,
+              errorWidget: (_, __, ___) =>
+                  Icon(Icons.link, size: 30, color: iconColor),
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
