@@ -43,17 +43,24 @@ class WebAnalyzer {
 
   /// Get web information
   /// return [InfoBase]
-  static Future<InfoBase> getInfo(String url,
-      {Duration cache, bool multimedia = true}) async {
-    // final start = DateTime.now();
-    InfoBase info = _map[url];
+  static InfoBase getInfoFromCache(String url) {
+    final InfoBase info = _map[url];
     if (info != null) {
-      if (info._timeout.isAfter(DateTime.now())) {
-        return info;
-      } else {
+      if (!info._timeout.isAfter(DateTime.now())) {
         _map.remove(url);
       }
     }
+    return info;
+  }
+
+  /// Get web information
+  /// return [InfoBase]
+  static Future<InfoBase> getInfo(String url,
+      {Duration cache = const Duration(hours: 24),
+      bool multimedia = true}) async {
+    // final start = DateTime.now();
+    InfoBase info = getInfoFromCache(url);
+    if (info != null) return info;
     try {
       final response = await _requestUrl(url);
 

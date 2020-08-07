@@ -16,7 +16,7 @@ class FlutterLinkPreview extends StatefulWidget {
   const FlutterLinkPreview({
     Key key,
     @required this.url,
-    this.cache = const Duration(hours: 1),
+    this.cache = const Duration(hours: 24),
     this.builder,
     this.titleStyle,
     this.bodyStyle,
@@ -51,12 +51,13 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
 
   @override
   void initState() {
-    _init();
+    _url = widget.url.trim();
+    _info = WebAnalyzer.getInfoFromCache(_url);
+    if (_info == null) _getInfo();
     super.initState();
   }
 
-  Future<void> _init() async {
-    _url = widget.url.trim();
+  Future<void> _getInfo() async {
     if (_url.startsWith("http")) {
       _info = await WebAnalyzer.getInfo(
         _url,

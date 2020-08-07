@@ -1,3 +1,7 @@
+## [1.3.2] - 2020-8-7.
+
+-   Optimize performance
+
 ## [1.3.1] - 2020-8-6.
 
 -   Optimize cookie-dependent URL crawling
