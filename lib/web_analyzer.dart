@@ -133,6 +133,15 @@ class WebAnalyzer {
       }
     } else if (stream.statusCode == HttpStatus.ok) {
       res = await Response.fromStream(stream);
+      if (uri.host == "m.tb.cn") {
+        final match = RegExp(r"var url = \'(.*)\'").firstMatch(res.body);
+        if (match != null) {
+          final newUrl = match.group(1);
+          if (newUrl != null) {
+            return _requestUrl(newUrl, count: count, cookie: cookie);
+          }
+        }
+      }
     }
     client.close();
     if (res == null) print("Get web info empty($url)");

@@ -1,3 +1,7 @@
+## [1.3.3] - 2020-8-11.
+
+-   Support for Taobao short connection analysis
+
 ## [1.3.2] - 2020-8-7.
 
 -   Optimize performance

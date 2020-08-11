@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _controller;
   int _index = -1;
   final List<String> _urls = [
+    "https://m.tb.cn/h.VFcZsnK?sm=34cd13",
     "http://world.people.com.cn/n1/2020/0805/c1002-31811808.html",
     "http://www.xinhuanet.com/politics/2020-08/05/c_1126329745.htm",
     "https://news.cctv.com/2020/08/06/ARTIA9lQegWYYPovyw9E3jnf200806.shtml?spm=C96370.PsikHJQ1ICOX.EZkZSILJCLZn.4",
