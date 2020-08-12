@@ -9,8 +9,9 @@ class WebInfo extends InfoBase {
   final String title;
   final String icon;
   final String description;
+  final String image;
 
-  WebInfo({this.title, this.icon, this.description});
+  WebInfo({this.title, this.icon, this.description, this.image});
 }
 
 /// Image Information
@@ -188,6 +189,7 @@ class WebAnalyzer {
         title: _analyzeTitle(document),
         icon: _analyzeIcon(document, uri),
         description: _analyzeDescription(document, html),
+        image: _analyzeImage(document, uri),
       );
       return info;
     }
@@ -268,6 +270,10 @@ class WebAnalyzer {
     }
 
     return _handleUrl(uri, icon);
+  }
+
+  static String _analyzeImage(Document document, Uri uri) {
+    return _getMetaContent(document, "property", "og:image");
   }
 
   static String _handleUrl(Uri uri, String source) {

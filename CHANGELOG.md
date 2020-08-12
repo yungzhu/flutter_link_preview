@@ -1,3 +1,7 @@
+## [1.3.4] - 2020-8-12.
+
+-   New image tag parsing
+
 ## [1.3.3] - 2020-8-11.
 
 -   Support for Taobao short connection analysis
