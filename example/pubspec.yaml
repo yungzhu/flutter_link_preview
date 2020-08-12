@@ -26,6 +26,7 @@ dependencies:
 
     flutter_link_preview:
         path: ../
+    cached_network_image: ^2.2.0+1
 
 dev_dependencies:
 

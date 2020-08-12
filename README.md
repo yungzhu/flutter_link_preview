@@ -10,12 +10,13 @@ Language: [English](README.md) | [中文简体](README-ZH.md)
 
 ## Special feature
 
--   Support for content caching and expiration mechanisms to return results faster.
--   Better fault tolerance, multiple ways to find icons, titles, descriptions
+-   Support for content caching and expiration mechanisms to return results faster
+-   Better fault tolerance, multiple ways to find icons, titles, descriptions, image
 -   Better support gbk code, no messy code
--   Optimized for large files with better crawl performance.
+-   Optimized for large files with better crawl performance
 -   Support for second hop authentication with cookies
 -   Support gif, video and other content capture
+-   Supports custom builder
 
 ## Getting Started
 

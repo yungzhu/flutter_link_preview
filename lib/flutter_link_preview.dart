@@ -2,7 +2,6 @@ library flutter_link_preview;
 
 import 'dart:convert';
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gbk2utf8/gbk2utf8.dart';
 import 'package:html/dom.dart' hide Text;
@@ -76,33 +75,29 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
       return widget.builder(_info);
     }
 
-    if (_info == null || _info is VideoInfo) {
-      return const SizedBox();
-    }
+    if (_info == null) return const SizedBox();
 
-    if (_info is ImageInfo) {
-      return CachedNetworkImage(
-        imageUrl: (_info as ImageInfo).url,
+    if (_info is WebImageInfo) {
+      return Image.network(
+        (_info as WebImageInfo).image,
         fit: BoxFit.contain,
       );
     }
 
     final WebInfo info = _info;
     if (!WebAnalyzer.isNotEmpty(info.title)) return const SizedBox();
-    final bool hasDescription = WebAnalyzer.isNotEmpty(info.description);
-    final Color iconColor = widget.titleStyle?.color;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(
-          children: <Widget>[
-            CachedNetworkImage(
-              imageUrl: info.icon ?? "",
+          children: [
+            Image.network(
+              info.icon ?? "",
               fit: BoxFit.contain,
               width: 30,
               height: 30,
-              errorWidget: (_, __, ___) =>
-                  Icon(Icons.link, size: 30, color: iconColor),
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(Icons.link, size: 30, color: widget.titleStyle?.color),
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -115,14 +110,15 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
             ),
           ],
         ),
-        if (hasDescription) const SizedBox(height: 8),
-        if (hasDescription)
+        if (WebAnalyzer.isNotEmpty(info.description)) ...[
+          const SizedBox(height: 8),
           Text(
             info.description,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
             style: widget.bodyStyle,
           ),
+        ],
       ],
     );
   }

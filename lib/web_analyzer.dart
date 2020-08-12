@@ -15,17 +15,15 @@ class WebInfo extends InfoBase {
 }
 
 /// Image Information
-class ImageInfo extends InfoBase {
-  final String url;
+class WebImageInfo extends InfoBase {
+  final String image;
 
-  ImageInfo({this.url});
+  WebImageInfo({this.image});
 }
 
 /// Video Information
-class VideoInfo extends InfoBase {
-  final String url;
-
-  VideoInfo({this.url});
+class WebVideoInfo extends WebImageInfo {
+  WebVideoInfo({String image}) : super(image: image);
 }
 
 /// Web analyzer
@@ -72,9 +70,9 @@ class WebAnalyzer {
         final String contentType = response.headers["content-type"];
         if (contentType != null) {
           if (contentType.contains("image/")) {
-            info = ImageInfo(url: url);
+            info = WebImageInfo(image: url);
           } else if (contentType.contains("video/")) {
-            info = VideoInfo(url: url);
+            info = WebVideoInfo(image: url);
           }
         }
       }
@@ -199,14 +197,14 @@ class WebAnalyzer {
   static InfoBase _analyzeGif(Document document, Uri uri) {
     if (_getMetaContent(document, "property", "og:image:type") == "image/gif") {
       final gif = _getMetaContent(document, "property", "og:image");
-      if (gif != null) return ImageInfo(url: _handleUrl(uri, gif));
+      if (gif != null) return WebImageInfo(image: _handleUrl(uri, gif));
     }
     return null;
   }
 
   static InfoBase _analyzeVideo(Document document, Uri uri) {
     final video = _getMetaContent(document, "property", "og:video");
-    if (video != null) return VideoInfo(url: _handleUrl(uri, video));
+    if (video != null) return WebVideoInfo(image: _handleUrl(uri, video));
     return null;
   }
 
