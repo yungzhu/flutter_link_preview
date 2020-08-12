@@ -27,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _controller;
   int _index = -1;
   final List<String> _urls = [
+    "https://mp.weixin.qq.com/s/qj7gkU-Pbdcdn3zO6ZQxqg",
     "https://m.tb.cn/h.VFcZsnK?sm=34cd13",
     "http://world.people.com.cn/n1/2020/0805/c1002-31811808.html",
     "http://www.xinhuanet.com/politics/2020-08/05/c_1126329745.htm",
@@ -70,7 +71,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     _controller = TextEditingController(
-        text: "https://mp.weixin.qq.com/s/qj7gkU-Pbdcdn3zO6ZQxqg");
+        text:
+            "https://www.bilibili.com/video/BV1F64y1c7hd?spm_id_from=333.851.b_7265706f7274466972737431.12");
     super.initState();
   }
 

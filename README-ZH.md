@@ -4,9 +4,7 @@
 
 文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
-![Demo](images/demo.jpg)
-
-![Gif](images/gif.jpg)
+![Demo](images/web1.png)
 
 ## 特色功能
 
@@ -32,83 +30,83 @@ FlutterLinkPreview(
 
 结果:
 
-![Result Image](images/web.jpg)
+![Result Image](images/web2.png)
 
 ## 自定义渲染
 
 ```dart
 Widget _buildCustomLinkPreview(BuildContext context) {
-    return FlutterLinkPreview(
-      url: _controller.value.text,
-      builder: (info) {
-        if (info == null) return const SizedBox();
-        if (info is WebImageInfo) {
-          return CachedNetworkImage(
-            imageUrl: info.image,
-            fit: BoxFit.contain,
-          );
-        }
+  return FlutterLinkPreview(
+    url: _controller.value.text,
+    builder: (info) {
+      if (info == null) return const SizedBox();
+      if (info is WebImageInfo) {
+        return CachedNetworkImage(
+          imageUrl: info.image,
+          fit: BoxFit.contain,
+        );
+      }
 
-        final WebInfo webInfo = info;
-        if (!WebAnalyzer.isNotEmpty(webInfo.title)) return const SizedBox();
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: const Color(0xFFF0F1F2),
-          ),
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  CachedNetworkImage(
-                    imageUrl: webInfo.icon ?? "",
-                    imageBuilder: (context, imageProvider) {
-                      return Image(
-                        image: imageProvider,
-                        fit: BoxFit.contain,
-                        width: 30,
-                        height: 30,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.link);
-                        },
-                      );
-                    },
+      final WebInfo webInfo = info;
+      if (!WebAnalyzer.isNotEmpty(webInfo.title)) return const SizedBox();
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: const Color(0xFFF0F1F2),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                CachedNetworkImage(
+                  imageUrl: webInfo.icon ?? "",
+                  imageBuilder: (context, imageProvider) {
+                    return Image(
+                      image: imageProvider,
+                      fit: BoxFit.contain,
+                      width: 30,
+                      height: 30,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.link);
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    webInfo.title,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      webInfo.title,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              if (WebAnalyzer.isNotEmpty(webInfo.description)) ...[
-                const SizedBox(height: 8),
-                Text(
-                  webInfo.description,
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
-              if (WebAnalyzer.isNotEmpty(webInfo.image)) ...[
-                const SizedBox(height: 8),
-                CachedNetworkImage(
-                  imageUrl: webInfo.image,
-                  fit: BoxFit.contain,
-                ),
-              ]
+            ),
+            if (WebAnalyzer.isNotEmpty(webInfo.description)) ...[
+              const SizedBox(height: 8),
+              Text(
+                webInfo.description,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
-          ),
-        );
-      },
-    );
-  }
+            if (WebAnalyzer.isNotEmpty(webInfo.image)) ...[
+              const SizedBox(height: 8),
+              CachedNetworkImage(
+                imageUrl: webInfo.image,
+                fit: BoxFit.contain,
+              ),
+            ]
+          ],
+        ),
+      );
+    },
+  );
+}
 ```
 
-![Result Image](images/web2.jpg)
+![Result Image](images/web3.png)
 
 ## 示例代码
 

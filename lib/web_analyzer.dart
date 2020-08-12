@@ -29,9 +29,16 @@ class WebVideoInfo extends WebImageInfo {
 /// Web analyzer
 class WebAnalyzer {
   static final Map<String, InfoBase> _map = {};
-  static final RegExp _bodyReg = RegExp(r"<body[^>]*>([\s\S]*?)<\/body>");
-  static final RegExp _scriptReg = RegExp(r"<script[^>]*>([\s\S]*?)<\/script>");
-  static final RegExp _styleReg = RegExp(r"<style[^>]*>([\s\S]*?)<\/style>");
+  static final RegExp _bodyReg =
+      RegExp(r"<body[^>]*>([\s\S]*?)<\/body>", caseSensitive: false);
+  static final RegExp _headReg =
+      RegExp(r"<head[^>]*>([\s\S]*?)<\/head>", caseSensitive: false);
+  static final RegExp _metaReg = RegExp(
+      r"<(meta|link)(.*?)\/?>|<title(.*?)</title>",
+      caseSensitive: false,
+      dotAll: true);
+  static final RegExp _titleReg =
+      RegExp("(title|icon|description|image)", caseSensitive: false);
   static final RegExp _lineReg = RegExp(r"[\n\r]");
   static final RegExp _spaceReg = RegExp(r"\s+");
 
@@ -58,13 +65,13 @@ class WebAnalyzer {
       {Duration cache = const Duration(hours: 24),
       bool multimedia = true}) async {
     // final start = DateTime.now();
+
     InfoBase info = getInfoFromCache(url);
     if (info != null) return info;
     try {
       final response = await _requestUrl(url);
 
       if (response == null) return null;
-      // print(response.request.headers);
       // print("$url ${response.statusCode}");
       if (multimedia) {
         final String contentType = response.headers["content-type"];
@@ -167,11 +174,8 @@ class WebAnalyzer {
       }
 
       // Improved performance
-      html = html.replaceFirst('<html">', "<html>");
-      html = html.replaceAll(_scriptReg, "");
-      html = html.replaceAll(_styleReg, "");
-      final nobody = html.replaceFirst(_bodyReg, "<body></body>");
-      final document = parser.parse(nobody);
+      final headHtml = _getHeadHtml(html);
+      final document = parser.parse(headHtml);
       final uri = Uri.parse(url);
 
       // get image or video
@@ -192,6 +196,20 @@ class WebAnalyzer {
       return info;
     }
     return null;
+  }
+
+  static String _getHeadHtml(String html) {
+    html = html.replaceFirst(_bodyReg, "<body></body>");
+    final matchs = _metaReg.allMatches(html);
+    final StringBuffer head = StringBuffer("<html><head>");
+    if (matchs != null) {
+      matchs.forEach((element) {
+        final String str = element.group(0);
+        if (str.contains(_titleReg)) head.writeln(str);
+      });
+    }
+    head.writeln("</head></html>");
+    return head.toString();
   }
 
   static InfoBase _analyzeGif(Document document, Uri uri) {
@@ -236,7 +254,8 @@ class WebAnalyzer {
         _getMetaContent(document, "name", "Description");
 
     if (!isNotEmpty(description)) {
-      final allDom = parser.parse(html);
+      final bodyHtml = html.replaceFirst(_headReg, "<head></head>");
+      final allDom = parser.parse(bodyHtml);
       String body = allDom.body.text ?? "";
       body = body.trim().replaceAll(_lineReg, " ").replaceAll(_spaceReg, " ");
       if (body.length > 200) {
