@@ -4,7 +4,7 @@
 
 文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
-![Demo](images/web1.png)
+![Demo](images/web1.png){:height="50%" width="50%"}
 
 ## 特色功能
 
@@ -30,7 +30,7 @@ FlutterLinkPreview(
 
 结果:
 
-![Result Image](images/web2.png)
+![Result Image](images/web2.png){:height="50%" width="50%"}
 
 ## 自定义渲染
 
@@ -106,7 +106,7 @@ Widget _buildCustomLinkPreview(BuildContext context) {
 }
 ```
 
-![Result Image](images/web3.png)
+![Result Image](images/web3.png){:height="50%" width="50%"}
 
 ## 示例代码
 
