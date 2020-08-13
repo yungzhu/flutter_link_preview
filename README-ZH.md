@@ -5,6 +5,8 @@
 文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
 ![Demo](images/web1.png =100x100)
+ <img src="images/web1.png" width = "300" height = "200" alt="Demo" align=center />
+
 
 ## 特色功能
 
