@@ -4,7 +4,7 @@
 
 文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
-![Demo](images/web1.png){:height="100px" width="400px"}
+![Demo-w150](images/web1.png)
 
 ## 特色功能
 
