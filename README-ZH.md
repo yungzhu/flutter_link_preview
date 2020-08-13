@@ -4,8 +4,7 @@
 
 文档语言: [English](README.md) | [中文简体](README-ZH.md)
 
-![Demo](images/web1.png){:height="50%" width="50%"}
- <img src="images/web1.png" style="zoom:50%" alt="Demo" />
+![Demo](images/web1.png)
 
 
 ## 特色功能
