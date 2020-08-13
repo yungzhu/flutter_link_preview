@@ -6,7 +6,6 @@
 
 ![Demo](images/web1.png)
 
-
 ## 特色功能
 
 -   支持内容缓存及过期机制，能更快地返回结果
@@ -31,13 +30,14 @@ FlutterLinkPreview(
 
 结果:
 
-![Result Image](images/web2.png){:height="50%" width="50%"}
+![Result Image](images/web2.png)
 
 ## 自定义渲染
 
 ```dart
 Widget _buildCustomLinkPreview(BuildContext context) {
   return FlutterLinkPreview(
+    key: ValueKey("${_controller.value.text}211"),
     url: _controller.value.text,
     builder: (info) {
       if (info == null) return const SizedBox();
@@ -107,7 +107,7 @@ Widget _buildCustomLinkPreview(BuildContext context) {
 }
 ```
 
-![Result Image](images/web3.png){:height="50%" width="50%"}
+![Result Image](images/web3.png)
 
 ## 示例代码
 

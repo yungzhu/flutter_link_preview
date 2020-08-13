@@ -269,9 +269,21 @@ class WebAnalyzer {
   static String _analyzeIcon(Document document, Uri uri) {
     final meta = document.head.getElementsByTagName("link");
     String icon = "";
-    final metaIcon = meta.firstWhere((e) {
+    // get icon first
+    var metaIcon = meta.firstWhere((e) {
       final rel = (e.attributes["rel"] ?? "").toLowerCase();
-      if (rel == "icon" || rel == "shortcut icon") {
+      if (rel == "icon") {
+        icon = e.attributes["href"];
+        if (icon != null && !icon.toLowerCase().contains(".svg")) {
+          return true;
+        }
+      }
+      return false;
+    }, orElse: () => null);
+
+    metaIcon ??= meta.firstWhere((e) {
+      final rel = (e.attributes["rel"] ?? "").toLowerCase();
+      if (rel == "shortcut icon") {
         icon = e.attributes["href"];
         if (icon != null && !icon.toLowerCase().contains(".svg")) {
           return true;
@@ -290,7 +302,8 @@ class WebAnalyzer {
   }
 
   static String _analyzeImage(Document document, Uri uri) {
-    return _getMetaContent(document, "property", "og:image");
+    final image = _getMetaContent(document, "property", "og:image");
+    return _handleUrl(uri, image);
   }
 
   static String _handleUrl(Uri uri, String source) {
