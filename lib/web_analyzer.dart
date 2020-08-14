@@ -31,15 +31,16 @@ class WebAnalyzer {
   static final Map<String, InfoBase> _map = {};
   static final RegExp _bodyReg =
       RegExp(r"<body[^>]*>([\s\S]*?)<\/body>", caseSensitive: false);
-  static final RegExp _headReg =
-      RegExp(r"<head[^>]*>([\s\S]*?)<\/head>", caseSensitive: false);
+  static final RegExp _htmlReg = RegExp(
+      r"(<head[^>]*>([\s\S]*?)<\/head>)|(<script[^>]*>([\s\S]*?)<\/script>)|(<link[^>]*>([\s\S]*?)<\/link>)|(<[^>]+>)",
+      caseSensitive: false);
   static final RegExp _metaReg = RegExp(
       r"<(meta|link)(.*?)\/?>|<title(.*?)</title>",
       caseSensitive: false,
       dotAll: true);
   static final RegExp _titleReg =
       RegExp("(title|icon|description|image)", caseSensitive: false);
-  static final RegExp _lineReg = RegExp(r"[\n\r]");
+  static final RegExp _lineReg = RegExp(r"[\n\r]|&nbsp;");
   static final RegExp _spaceReg = RegExp(r"\s+");
 
   /// Is it an empty string
@@ -174,8 +175,10 @@ class WebAnalyzer {
       }
 
       // Improved performance
+      // final start = DateTime.now();
       final headHtml = _getHeadHtml(html);
       final document = parser.parse(headHtml);
+      // print("dom cost ${DateTime.now().difference(start).inMilliseconds}");
       final uri = Uri.parse(url);
 
       // get image or video
@@ -254,13 +257,13 @@ class WebAnalyzer {
         _getMetaContent(document, "name", "Description");
 
     if (!isNotEmpty(description)) {
-      final bodyHtml = html.replaceFirst(_headReg, "<head></head>");
-      final allDom = parser.parse(bodyHtml);
-      String body = allDom.body.text ?? "";
+      // final DateTime start = DateTime.now();
+      String body = html.replaceAll(_htmlReg, "");
       body = body.trim().replaceAll(_lineReg, " ").replaceAll(_spaceReg, " ");
-      if (body.length > 200) {
-        body = body.substring(0, 200);
+      if (body.length > 300) {
+        body = body.substring(0, 300);
       }
+      // print("html cost ${DateTime.now().difference(start).inMilliseconds}");
       return body;
     }
     return description;
