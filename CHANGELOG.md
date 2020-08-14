@@ -1,3 +1,11 @@
+## [1.4.1] - 2020-8-14.
+
+-   Optimizing performance in a new way
+
+-   Have better compatibility
+
+-   Upgrade some APIs
+
 ## [1.3.4] - 2020-8-12.
 
 -   New image tag parsing
