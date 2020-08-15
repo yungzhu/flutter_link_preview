@@ -1,10 +1,12 @@
-## [1.4.1] - 2020-8-14.
+## [1.4.2] - 2020-8-15.
 
 -   Optimizing performance in a new way
 
 -   Have better compatibility
 
 -   Upgrade some APIs
+
+-   Support for invalid certificates
 
 ## [1.3.4] - 2020-8-12.
 

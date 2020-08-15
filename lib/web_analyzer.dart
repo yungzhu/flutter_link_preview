@@ -32,7 +32,7 @@ class WebAnalyzer {
   static final RegExp _bodyReg =
       RegExp(r"<body[^>]*>([\s\S]*?)<\/body>", caseSensitive: false);
   static final RegExp _htmlReg = RegExp(
-      r"(<head[^>]*>([\s\S]*?)<\/head>)|(<script[^>]*>([\s\S]*?)<\/script>)|(<link[^>]*>([\s\S]*?)<\/link>)|(<[^>]+>)",
+      r"(<head[^>]*>([\s\S]*?)<\/head>)|(<script[^>]*>([\s\S]*?)<\/script>)|(<style[^>]*>([\s\S]*?)<\/style>)|(<[^>]+>)|(<link[^>]*>([\s\S]*?)<\/link>)|(<[^>]+>)",
       caseSensitive: false);
   static final RegExp _metaReg = RegExp(
       r"<(meta|link)(.*?)\/?>|<title(.*?)</title>",
@@ -40,7 +40,7 @@ class WebAnalyzer {
       dotAll: true);
   static final RegExp _titleReg =
       RegExp("(title|icon|description|image)", caseSensitive: false);
-  static final RegExp _lineReg = RegExp(r"[\n\r]|&nbsp;");
+  static final RegExp _lineReg = RegExp(r"[\n\r]|&nbsp;|&gt;");
   static final RegExp _spaceReg = RegExp(r"\s+");
 
   /// Is it an empty string
@@ -104,12 +104,15 @@ class WebAnalyzer {
     "weibo.com":
         "YF-Page-G0=02467fca7cf40a590c28b8459d93fb95|1596707497|1596707497; SUB=_2AkMod12Af8NxqwJRmf8WxGjna49_ygnEieKeK6xbJRMxHRl-yT9kqlcftRB6A_dzb7xq29tqJiOUtDsy806R_ZoEGgwS; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W59fYdi4BXCzHNAH7GabuIJ"
   };
+  static bool _certificateCheck(X509Certificate cert, String host, int port) =>
+      true;
 
   static Future<Response> _requestUrl(String url,
       {int count = 0, String cookie}) async {
     Response res;
     final uri = Uri.parse(url);
-    final client = Client();
+    final ioClient = HttpClient()..badCertificateCallback = _certificateCheck;
+    final client = IOClient(ioClient);
     final request = Request('GET', uri)
       ..followRedirects = false
       ..headers["User-Agent"] =
