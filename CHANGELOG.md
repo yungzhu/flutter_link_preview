@@ -1,3 +1,7 @@
+## [1.5.1] - 2020-8-20.
+
+-   Use multi-processing to parse web pages, avoid blocking the main process
+
 ## [1.4.2] - 2020-8-15.
 
 -   Optimizing performance in a new way

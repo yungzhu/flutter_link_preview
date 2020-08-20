@@ -70,22 +70,8 @@ class WebAnalyzer {
     InfoBase info = getInfoFromCache(url);
     if (info != null) return info;
     try {
-      final response = await _requestUrl(url);
-
-      if (response == null) return null;
-      // print("$url ${response.statusCode}");
-      if (multimedia) {
-        final String contentType = response.headers["content-type"];
-        if (contentType != null) {
-          if (contentType.contains("image/")) {
-            info = WebImageInfo(image: url);
-          } else if (contentType.contains("video/")) {
-            info = WebVideoInfo(image: url);
-          }
-        }
-      }
-
-      info ??= await _getWebInfo(response, url, multimedia);
+      // info = await _getInfo(url, multimedia);
+      info = await _getInfoByIsolate(url, multimedia);
 
       if (cache != null && info != null) {
         info._timeout = DateTime.now().add(cache);
@@ -100,10 +86,81 @@ class WebAnalyzer {
     return info;
   }
 
+  static Future<InfoBase> _getInfo(String url, bool multimedia) async {
+    final response = await _requestUrl(url);
+
+    if (response == null) return null;
+    // print("$url ${response.statusCode}");
+    if (multimedia) {
+      final String contentType = response.headers["content-type"];
+      if (contentType != null) {
+        if (contentType.contains("image/")) {
+          return WebImageInfo(image: url);
+        } else if (contentType.contains("video/")) {
+          return WebVideoInfo(image: url);
+        }
+      }
+    }
+
+    return _getWebInfo(response, url, multimedia);
+  }
+
+  static Future<InfoBase> _getInfoByIsolate(String url, bool multimedia) async {
+    final sender = ReceivePort();
+    final Isolate isolate = await Isolate.spawn(_isolate, sender.sendPort);
+    final sendPort = await sender.first as SendPort;
+    final answer = ReceivePort();
+
+    sendPort.send([answer.sendPort, url, multimedia]);
+    final List<String> res = await answer.first;
+
+    InfoBase info;
+    if (res != null) {
+      if (res[0] == "0") {
+        info = WebInfo(
+            title: res[1], description: res[2], icon: res[3], image: res[4]);
+      } else if (res[0] == "1") {
+        info = WebVideoInfo(image: res[1]);
+      } else if (res[0] == "2") {
+        info = WebImageInfo(image: res[1]);
+      }
+    }
+
+    sender.close();
+    answer.close();
+    isolate.kill(priority: Isolate.immediate);
+
+    return info;
+  }
+
+  static void _isolate(SendPort sendPort) {
+    final port = ReceivePort();
+    sendPort.send(port.sendPort);
+    port.listen((message) async {
+      final SendPort sender = message[0];
+      final String url = message[1];
+      final bool multimedia = message[2];
+
+      final info = await _getInfo(url, multimedia);
+
+      if (info is WebInfo) {
+        sender.send(["0", info.title, info.description, info.icon, info.image]);
+      } else if (info is WebVideoInfo) {
+        sender.send(["1", info.image]);
+      } else if (info is WebImageInfo) {
+        sender.send(["2", info.image]);
+      } else {
+        sender.send(null);
+      }
+      port.close();
+    });
+  }
+
   static final Map<String, String> _cookies = {
     "weibo.com":
         "YF-Page-G0=02467fca7cf40a590c28b8459d93fb95|1596707497|1596707497; SUB=_2AkMod12Af8NxqwJRmf8WxGjna49_ygnEieKeK6xbJRMxHRl-yT9kqlcftRB6A_dzb7xq29tqJiOUtDsy806R_ZoEGgwS; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W59fYdi4BXCzHNAH7GabuIJ"
   };
+
   static bool _certificateCheck(X509Certificate cert, String host, int port) =>
       true;
 
@@ -116,7 +173,7 @@ class WebAnalyzer {
     final request = Request('GET', uri)
       ..followRedirects = false
       ..headers["User-Agent"] =
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36"
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
       ..headers["cache-control"] = "no-cache"
       ..headers["Cookie"] = cookie ?? _cookies[uri.host]
       ..headers["accept"] = "*/*";
