@@ -1,3 +1,7 @@
+## [1.5.2] - 2020-8-25.
+
+-   Add multi-thread switch, default is close multi-thread
+
 ## [1.5.1] - 2020-8-20.
 
 -   Use multi-processing to parse web pages, avoid blocking the main process

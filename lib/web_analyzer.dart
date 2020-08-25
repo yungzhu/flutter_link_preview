@@ -64,14 +64,17 @@ class WebAnalyzer {
   /// return [InfoBase]
   static Future<InfoBase> getInfo(String url,
       {Duration cache = const Duration(hours: 24),
-      bool multimedia = true}) async {
+      bool multimedia = true,
+      bool useMultithread = false}) async {
     // final start = DateTime.now();
 
     InfoBase info = getInfoFromCache(url);
     if (info != null) return info;
     try {
-      // info = await _getInfo(url, multimedia);
-      info = await _getInfoByIsolate(url, multimedia);
+      if (useMultithread)
+        info = await _getInfoByIsolate(url, multimedia);
+      else
+        info = await _getInfo(url, multimedia);
 
       if (cache != null && info != null) {
         info._timeout = DateTime.now().add(cache);

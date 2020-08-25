@@ -22,6 +22,7 @@ class FlutterLinkPreview extends StatefulWidget {
     this.titleStyle,
     this.bodyStyle,
     this.showMultimedia = true,
+    this.useMultithread = false,
   }) : super(key: key);
 
   /// Web address, HTTP and HTTPS support
@@ -41,6 +42,9 @@ class FlutterLinkPreview extends StatefulWidget {
 
   /// Show image or video
   final bool showMultimedia;
+
+  /// Whether to use multi-threaded analysis of web pages
+  final bool useMultithread;
 
   @override
   _FlutterLinkPreviewState createState() => _FlutterLinkPreviewState();
@@ -64,6 +68,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
         _url,
         cache: widget.cache,
         multimedia: widget.showMultimedia,
+        useMultithread: widget.useMultithread,
       );
       if (mounted) setState(() {});
     } else {
