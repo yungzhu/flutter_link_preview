@@ -253,10 +253,17 @@ class WebAnalyzer {
         if (video != null) return video;
       }
 
+      String title = _analyzeTitle(document);
+      String description = _analyzeDescription(document, html);
+      if (!isNotEmpty(title)) {
+        title = description;
+        description = null;
+      }
+
       final info = WebInfo(
-        title: _analyzeTitle(document),
+        title: title,
         icon: _analyzeIcon(document, uri),
-        description: _analyzeDescription(document, html),
+        description: description,
         image: _analyzeImage(document, uri),
       );
       return info;
