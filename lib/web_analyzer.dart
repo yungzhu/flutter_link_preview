@@ -254,7 +254,8 @@ class WebAnalyzer {
       }
 
       String title = _analyzeTitle(document);
-      String description = _analyzeDescription(document, html);
+      String description =
+          _analyzeDescription(document, html)?.replaceAll(r"\x0a", " ");
       if (!isNotEmpty(title)) {
         title = description;
         description = null;

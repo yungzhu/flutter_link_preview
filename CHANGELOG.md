@@ -1,6 +1,11 @@
+## [1.5.4] - 2020-8-28.
+
+-   Filtering special characters
+
 ## [1.5.3] - 2020-8-26.
 
 -   Add multi-thread switch, default is close multi-thread
+
 -   Add support for parsing Tiktok
 
 ## [1.5.1] - 2020-8-20.

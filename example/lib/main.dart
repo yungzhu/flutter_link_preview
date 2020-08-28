@@ -28,6 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _index = -1;
   final List<String> _urls = [
     "https://mp.weixin.qq.com/s/qj7gkU-Pbdcdn3zO6ZQxqg",
+    "https://mp.weixin.qq.com/s/43GznPLxi5i3yOdvrlr1JQ",
     "https://m.tb.cn/h.VFcZsnK?sm=34cd13",
     "http://world.people.com.cn/n1/2020/0805/c1002-31811808.html",
     "http://www.xinhuanet.com/politics/2020-08/05/c_1126329745.htm",
