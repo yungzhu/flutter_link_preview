@@ -1,3 +1,7 @@
+## [1.5.5] - 2020-8-31.
+
+-   WebInfo adds redirectUrl property to record redirect addresses for short connections
+
 ## [1.5.4] - 2020-8-28.
 
 -   Filtering special characters

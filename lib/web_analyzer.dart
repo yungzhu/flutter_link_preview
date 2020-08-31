@@ -10,8 +10,15 @@ class WebInfo extends InfoBase {
   final String icon;
   final String description;
   final String image;
+  final String redirectUrl;
 
-  WebInfo({this.title, this.icon, this.description, this.image});
+  WebInfo({
+    this.title,
+    this.icon,
+    this.description,
+    this.image,
+    this.redirectUrl,
+  });
 }
 
 /// Image Information
@@ -266,6 +273,7 @@ class WebAnalyzer {
         icon: _analyzeIcon(document, uri),
         description: description,
         image: _analyzeImage(document, uri),
+        redirectUrl: response.request.url.toString(),
       );
       return info;
     }
