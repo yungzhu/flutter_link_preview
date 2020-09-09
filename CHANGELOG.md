@@ -1,3 +1,7 @@
+## [1.5.6] - 2020-9-9.
+
+-   Solve the problem that individual website can't be fetched
+
 ## [1.5.5] - 2020-8-31.
 
 -   WebInfo adds redirectUrl property to record redirect addresses for short connections
