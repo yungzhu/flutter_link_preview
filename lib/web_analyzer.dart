@@ -198,7 +198,8 @@ class WebAnalyzer {
     final stream = await client.send(request);
 
     if (stream.statusCode == HttpStatus.movedTemporarily ||
-        stream.statusCode == HttpStatus.movedPermanently) {
+        stream.statusCode == HttpStatus.movedPermanently ||
+        stream.statusCode == HttpStatus.seeOther) {
       if (stream.isRedirect && count < 6) {
         final String location = stream.headers['location'];
         if (location != null) {
