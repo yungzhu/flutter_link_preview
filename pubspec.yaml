@@ -9,8 +9,8 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    http: ^0.12.1
-    html: ^0.14.0+3
+    http: ^0.13.3
+    html: ^0.15.0
     gbk2utf8: ^1.0.1
 
 dev_dependencies:
