@@ -11,7 +11,7 @@ dependencies:
         sdk: flutter
     http: ^0.12.1
     html: ^0.14.0+3
-    gbk2utf8: ^1.0.1
+    fast_gbk: ^1.0.0
 
 dev_dependencies:
 
