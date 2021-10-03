@@ -4,13 +4,13 @@ version: 1.5.6
 homepage: https://github.com/yungzhu/flutter_link_preview
 
 environment:
-    sdk: ">=2.7.0 <3.0.0"
+    sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
     flutter:
         sdk: flutter
-    http: ^0.12.1
-    html: ^0.14.0+3
+    http: ^0.13.3
+    html: ^0.15.0
     fast_gbk: ^1.0.0
 
 dev_dependencies:
