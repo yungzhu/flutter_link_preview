@@ -17,14 +17,14 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController _controller;
+  TextEditingController? _controller;
   int _index = -1;
   final List<String> _urls = [
     "https://mp.weixin.qq.com/s/qj7gkU-Pbdcdn3zO6ZQxqg",
@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       _index++;
                       if (_index >= _urls.length) _index = 0;
-                      _controller.text = _urls[_index];
+                      _controller!.text = _urls[_index];
                       setState(() {});
                     },
                     child: const Text("next"),
@@ -108,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(width: 15),
                   RaisedButton(
                     onPressed: () {
-                      _controller.clear();
+                      _controller!.clear();
                     },
                     child: const Text("clear"),
                   ),
@@ -116,8 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 15),
               FlutterLinkPreview(
-                key: ValueKey(_controller.value.text),
-                url: _controller.value.text,
+                key: ValueKey(_controller!.value.text),
+                url: _controller!.value.text,
                 titleStyle: const TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
@@ -136,18 +136,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildCustomLinkPreview(BuildContext context) {
     return FlutterLinkPreview(
-      key: ValueKey("${_controller.value.text}211"),
-      url: _controller.value.text,
+      key: ValueKey("${_controller!.value.text}211"),
+      url: _controller!.value.text,
       builder: (info) {
         if (info == null) return const SizedBox();
         if (info is WebImageInfo) {
           return CachedNetworkImage(
-            imageUrl: info.image,
+            imageUrl: info.image!,
             fit: BoxFit.contain,
           );
         }
 
-        final WebInfo webInfo = info;
+        final WebInfo webInfo = info as WebInfo;
         if (!WebAnalyzer.isNotEmpty(webInfo.title)) return const SizedBox();
         return Container(
           decoration: BoxDecoration(
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      webInfo.title,
+                      webInfo.title!,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -186,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (WebAnalyzer.isNotEmpty(webInfo.description)) ...[
                 const SizedBox(height: 8),
                 Text(
-                  webInfo.description,
+                  webInfo.description!,
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -194,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (WebAnalyzer.isNotEmpty(webInfo.image)) ...[
                 const SizedBox(height: 8),
                 CachedNetworkImage(
-                  imageUrl: webInfo.image,
+                  imageUrl: webInfo.image!,
                   fit: BoxFit.contain,
                 ),
               ]
