@@ -26,9 +26,8 @@ dependencies:
 
     flutter_link_preview:
         path: ../
-    cached_network_image: ^2.2.0+1
+    cached_network_image: ^3.2.0
 
-dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
