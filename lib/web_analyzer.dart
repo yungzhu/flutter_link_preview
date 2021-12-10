@@ -235,7 +235,6 @@ class WebAnalyzer {
         html = const Utf8Decoder().convert(response.bodyBytes);
       } catch (e) {
         try {
-          html = gbk.decode(response.bodyBytes);
         } catch (e) {
           print("Web page resolution failure from:$url Error:$e");
         }

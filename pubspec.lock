@@ -35,26 +35,19 @@ packages:
       name: csslib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.1"
+    version: "0.17.1"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  gbk2utf8:
-    dependency: "direct main"
-    description:
-      name: gbk2utf8
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   html:
     dependency: "direct main"
     description:
       name: html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.0+3"
+    version: "0.15.0"
   http:
     dependency: "direct main"
     description:
