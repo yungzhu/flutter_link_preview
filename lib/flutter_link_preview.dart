@@ -8,14 +8,15 @@ import 'package:html/dom.dart' hide Text;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
+import 'package:collection/collection.dart';
 
 part 'web_analyzer.dart';
 
 /// Link Preview Widget
 class FlutterLinkPreview extends StatefulWidget {
   const FlutterLinkPreview({
-    Key key,
-    @required this.url,
+    Key? key,
+    required this.url,
     this.cache = const Duration(hours: 24),
     this.builder,
     this.titleStyle,
@@ -31,13 +32,13 @@ class FlutterLinkPreview extends StatefulWidget {
   final Duration cache;
 
   /// Customized rendering methods
-  final Widget Function(InfoBase info) builder;
+  final Widget Function(InfoBase? info)? builder;
 
   /// Title style
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
 
   /// Content style
-  final TextStyle bodyStyle;
+  final TextStyle? bodyStyle;
 
   /// Show image or video
   final bool showMultimedia;
@@ -50,8 +51,8 @@ class FlutterLinkPreview extends StatefulWidget {
 }
 
 class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
-  String _url;
-  InfoBase _info;
+  String? _url;
+  InfoBase? _info;
 
   @override
   void initState() {
@@ -62,7 +63,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
   }
 
   Future<void> _getInfo() async {
-    if (_url.startsWith("http")) {
+    if (_url!.startsWith("http")) {
       _info = await WebAnalyzer.getInfo(
         _url,
         cache: widget.cache,
@@ -78,19 +79,19 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
   @override
   Widget build(BuildContext context) {
     if (widget.builder != null) {
-      return widget.builder(_info);
+      return widget.builder!(_info);
     }
 
     if (_info == null) return const SizedBox();
 
     if (_info is WebImageInfo) {
       return Image.network(
-        (_info as WebImageInfo).image,
+        (_info as WebImageInfo).image!,
         fit: BoxFit.contain,
       );
     }
 
-    final WebInfo info = _info;
+    final WebInfo info = _info as WebInfo;
     if (!WebAnalyzer.isNotEmpty(info.title)) return const SizedBox();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +109,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                info.title,
+                info.title!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: widget.titleStyle,
@@ -119,7 +120,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
         if (WebAnalyzer.isNotEmpty(info.description)) ...[
           const SizedBox(height: 8),
           Text(
-            info.description,
+            info.description!,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
             style: widget.bodyStyle,
