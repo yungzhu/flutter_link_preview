@@ -27,6 +27,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController _controller;
   int _index = -1;
   final List<String> _urls = [
+    "https://news.google.com/__i/rss/rd/articles/CBMiMGh0dHBzOi8vd3d3Lm1pcnJvcm1lZGlhLm1nL3N0b3J5LzIwMjExMjE1ZWRpMDExL9IBAA?oc=5",
+    "https://news.google.com/__i/rss/rd/articles/CBMiOmh0dHBzOi8vbmV3cy5sdG4uY29tLnR3L25ld3MvcG9saXRpY3MvYnJlYWtpbmduZXdzLzM3NjkxNTnSAT5odHRwczovL25ld3MubHRuLmNvbS50dy9hbXAvbmV3cy9wb2xpdGljcy9icmVha2luZ25ld3MvMzc2OTE1OQ?oc=5",
     "https://lihkg.com/thread/2529600/page/1",
     "https://youtu.be/v_hR4K4auoQ",
     "https://twitter.com/sspai_com/status/1392794070704066566?s=20",
@@ -78,6 +80,14 @@ class _MyHomePageState extends State<MyHomePage> {
     _controller = TextEditingController(
         text:
             "https://www.bilibili.com/video/BV1F64y1c7hd?spm_id_from=333.851.b_7265706f7274466972737431.12");
+
+    // test useMultithread
+    WebAnalyzer.getInfo(
+      _urls[1],
+      multimedia: false,
+      useMultithread: true,
+    ).then(print);
+
     super.initState();
   }
 
@@ -144,9 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
       url: _controller.value.text,
       builder: (info) {
         if (info == null) return const SizedBox();
-        if (info is WebImageInfo) {
+        if (info is WebImageInfo && WebAnalyzer.isNotEmpty(info.image)) {
           return CachedNetworkImage(
-            imageUrl: info.image,
+            imageUrl: info.image!,
             fit: BoxFit.contain,
           );
         }
@@ -182,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      webInfo.title,
+                      webInfo.title ?? "",
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -191,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (WebAnalyzer.isNotEmpty(webInfo.description)) ...[
                 const SizedBox(height: 8),
                 Text(
-                  webInfo.description,
+                  webInfo.description ?? "",
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -199,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (WebAnalyzer.isNotEmpty(webInfo.image)) ...[
                 const SizedBox(height: 8),
                 CachedNetworkImage(
-                  imageUrl: webInfo.image,
+                  imageUrl: webInfo.image!,
                   fit: BoxFit.contain,
                 ),
               ]

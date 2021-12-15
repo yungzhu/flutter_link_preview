@@ -86,10 +86,14 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
     if (_info == null) return const SizedBox();
 
     if (_info is WebImageInfo) {
-      return Image.network(
-        (_info as WebImageInfo).image,
-        fit: BoxFit.contain,
-      );
+      if((_info as WebImageInfo).image == null){
+        return const SizedBox();
+      }else {
+        return Image.network(
+          (_info as WebImageInfo).image!,
+          fit: BoxFit.contain,
+        );
+      }
     }
 
     final WebInfo info = _info as WebInfo;
@@ -110,7 +114,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                info.title,
+                info.title ?? "",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: widget.titleStyle,
@@ -121,7 +125,7 @@ class _FlutterLinkPreviewState extends State<FlutterLinkPreview> {
         if (WebAnalyzer.isNotEmpty(info.description)) ...[
           const SizedBox(height: 8),
           Text(
-            info.description,
+            info.description ?? "",
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
             style: widget.bodyStyle,

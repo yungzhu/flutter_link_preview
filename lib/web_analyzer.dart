@@ -6,31 +6,31 @@ abstract class InfoBase {
 
 /// Web Information
 class WebInfo extends InfoBase {
-  final String title;
+  final String? title;
   final String? icon;
-  final String description;
-  final String image;
+  final String? description;
+  final String? image;
   final String? redirectUrl;
 
   WebInfo({
-    required this.title,
+    this.title,
     this.icon,
-    required this.description,
-    required this.image,
+    this.description,
+    this.image,
     this.redirectUrl,
   });
 }
 
 /// Image Information
 class WebImageInfo extends InfoBase {
-  final String image;
+  final String? image;
 
   WebImageInfo({required this.image});
 }
 
 /// Video Information
 class WebVideoInfo extends WebImageInfo {
-  WebVideoInfo({required String image}) : super(image: image);
+  WebVideoInfo({String? image}) : super(image: image);
 }
 
 /// Web analyzer
@@ -123,7 +123,7 @@ class WebAnalyzer {
     final answer = ReceivePort();
 
     sendPort.send([answer.sendPort, url, multimedia]);
-    final List<String>? res = await (answer.first as Future<List<String>?>);
+    final List<String?>? res = await answer.first;
 
     InfoBase? info;
     if (res != null) {
