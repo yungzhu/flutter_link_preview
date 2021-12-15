@@ -17,14 +17,14 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController _controller;
+  late TextEditingController _controller;
   int _index = -1;
   final List<String> _urls = [
     "https://lihkg.com/thread/2529600/page/1",
@@ -151,8 +151,9 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }
 
-        final WebInfo webInfo = info;
-        if (!WebAnalyzer.isNotEmpty(webInfo.title)) return const SizedBox();
+        final WebInfo? webInfo = info as WebInfo;
+        if (webInfo == null || !WebAnalyzer.isNotEmpty(webInfo.title))
+          return const SizedBox();
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
