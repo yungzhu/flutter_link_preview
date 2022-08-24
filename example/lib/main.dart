@@ -83,51 +83,53 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextField(controller: _controller),
-              Row(
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: () {
-                      setState(() {});
-                    },
-                    child: const Text("get"),
-                  ),
-                  const SizedBox(width: 15),
-                  RaisedButton(
-                    onPressed: () {
-                      _index++;
-                      if (_index >= _urls.length) _index = 0;
-                      _controller.text = _urls[_index];
-                      setState(() {});
-                    },
-                    child: const Text("next"),
-                  ),
-                  const SizedBox(width: 15),
-                  RaisedButton(
-                    onPressed: () {
-                      _controller.clear();
-                    },
-                    child: const Text("clear"),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              FlutterLinkPreview(
-                key: ValueKey(_controller.value.text),
-                url: _controller.value.text,
-                titleStyle: const TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextField(controller: _controller),
+                Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: () {
+                        setState(() {});
+                      },
+                      child: const Text("get"),
+                    ),
+                    const SizedBox(width: 15),
+                    RaisedButton(
+                      onPressed: () {
+                        _index++;
+                        if (_index >= _urls.length) _index = 0;
+                        _controller.text = _urls[_index];
+                        setState(() {});
+                      },
+                      child: const Text("next"),
+                    ),
+                    const SizedBox(width: 15),
+                    RaisedButton(
+                      onPressed: () {
+                        _controller.clear();
+                      },
+                      child: const Text("clear"),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 50),
-              const Text("Custom Builder", style: TextStyle(fontSize: 20)),
-              const Divider(),
-              _buildCustomLinkPreview(context),
-            ],
+                const SizedBox(height: 15),
+                FlutterLinkPreview(
+                  key: ValueKey(_controller.value.text),
+                  url: _controller.value.text,
+                  titleStyle: const TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 50),
+                const Text("Custom Builder", style: TextStyle(fontSize: 20)),
+                const Divider(),
+                _buildCustomLinkPreview(context),
+              ],
+            ),
           ),
         ),
       ),
